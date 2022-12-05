@@ -2,218 +2,47 @@
 <html lang="en">
 
 <head>
-    <style>
-        body {
-            background-image: url('/media/bg.jpg');
-            background-repeat: no-repeat;
-            background-attachment: fixed;
-            background-size: cover;
-        }
-
-        body {
-            animation: fadeInAnimation ease 2s;
-            animation-iteration-count: 1;
-            animation-fill-mode: forwards;
-        }
-
-        @keyframes fadeInAnimation {
-            0% {
-                opacity: 0;
-            }
-
-            100% {
-                opacity: 1;
-            }
-        }
-
-        body {
-            -ms-overflow-style: none;
-            /* for Internet Explorer, Edge */
-            scrollbar-width: none;
-            /* for Firefox */
-            overflow-y: scroll;
-        }
-
-        body::-webkit-scrollbar {
-            display: none;
-            /* for Chrome, Safari, and Opera */
-        }
-    </style>
-    <link rel="stylesheet" href="style.css">
     <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>XelXen</title>
-    <link rel="icon" href="/media/favicon.png" type="image/icon type">
-    <script async src="https://arc.io/widget.min.js#EV1UmGkz"></script>
-    <meta name="ocs-site-verification" content="85b8efe8b05ad233ae1457ad9a9cca75" />
+    <title>Document</title>
+    <link href="style.css" rel="stylesheet">
 </head>
 
-<body>
+<body class="bg-background">
 
-    <header class="text-gray-300 bg-opacity-40 bg-black ring-4 ring-white ring-opacity-10 rounded-b-3xl body-font">
+    <header class="text-white body-font">
         <div class="container mx-auto flex flex-wrap p-5 flex-col md:flex-row items-center">
-            <nav class="flex lg:w-2/5 flex-wrap items-center text-base md:ml-auto">
-                <a href="mailto:xelxenfox@gmail.com" class="mr-5 select-none hover:text-white">Contact me</a>
-                <a href="https://www.youtube.com/channel/UC0_XvYcbMMZv2rk870ZP6cQ/about"
-                    class="mr-5 select-none hover:text-white">About me</a>
-                <a href="https://github.com/XelXen" class="select-none hover:text-white">GitHub</a>
-            </nav>
-            <a
-                class="flex order-first lg:order-none select-none lg:w-1/5 title-font font-medium items-center text-white lg:items-center lg:justify-center mb-4 md:mb-0">
-                <span class="ml-3 text-3xl xl:block lg:hidden">XelXen</span>
+            <a class="flex title-font font-medium items-center text-white mb-4 md:mb-0">
+                <svg width="125" height="25" fill="none" class="w-30 h-20 p-2" viewBox="0 0 125 25" fill="none"
+                    xmlns="http://www.w3.org/2000/svg">
+                    <path
+                        d="M7.95073 11.9049H11.2884C16.6826 11.9049 18.7728 9.30211 18.7728 4.97535V1.59507C18.7728 1.15563 18.5368 0.919014 18.0985 0.919014H15.6037C15.1655 0.919014 14.9295 1.15563 14.9295 1.59507V5.00915C14.9295 7.57817 13.4798 8.52465 11.0187 8.52465H8.22043C5.75934 8.52465 4.34336 7.57817 4.34336 5.00915V1.59507C4.34336 1.15563 4.10737 0.919014 3.66909 0.919014H1.17427C0.735996 0.919014 0.5 1.15563 0.5 1.59507V4.97535C0.5 9.30211 2.55654 11.9049 7.95073 11.9049ZM0.5 23.9049C0.5 24.3444 0.735996 24.581 1.17427 24.581H3.66909C4.10737 24.581 4.34336 24.3444 4.34336 23.9049V20.4908C4.34336 17.9218 5.75934 16.9754 8.22043 16.9754H11.0187C13.4798 16.9754 14.9295 17.9218 14.9295 20.4908V23.9049C14.9295 24.3444 15.1655 24.581 15.6037 24.581H18.0985C18.5368 24.581 18.7728 24.3444 18.7728 23.9049V20.5246C18.7728 16.1979 16.6826 13.5951 11.2884 13.5951H7.95073C2.55654 13.5951 0.5 16.1979 0.5 20.5246V23.9049Z"
+                        fill="#FFFAE9" />
+                    <path
+                        d="M29.4116 24.75H31.8727C37.2669 24.75 39.964 22.7218 39.964 19.3077C39.964 18.8683 39.728 18.6317 39.2897 18.6317H36.8286C36.424 18.6317 36.1206 18.8683 36.1206 19.3077C36.1206 20.8289 34.1989 21.3697 32.4795 21.3697H30.0859C27.0516 21.3697 25.6357 20.457 25.6357 17.8542V15.488H39.3908C39.7954 15.488 40.0314 15.2514 40.0314 14.812V7.00352C40.0314 3.04859 37.6714 0.75 32.7493 0.75H29.4116C23.8488 0.75 21.7923 3.35282 21.7923 7.67958V17.8204C21.7923 22.1472 23.8488 24.75 29.4116 24.75ZM25.6357 12.3444V7.74718C25.6357 5.14437 27.0516 4.23169 29.6813 4.23169H32.4795C34.5698 4.23169 36.188 4.94155 36.188 7.00352V12.3444H25.6357Z"
+                        fill="#FFFAE9" />
+                    <path
+                        d="M52.5179 24.75H59.4629C59.9012 24.75 60.1371 24.5134 60.1371 24.0739V22.0458C60.1371 21.6063 59.9012 21.3697 59.4629 21.3697H52.7876C49.8208 21.3697 48.4048 20.457 48.4048 17.7528V1.59507C48.4048 1.15563 48.1688 0.919014 47.7305 0.919014H45.2357C44.7974 0.919014 44.5614 1.15563 44.5614 1.59507V17.8204C44.5614 22.1472 46.618 24.75 52.5179 24.75Z"
+                        fill="#FFFAE9" />
+                    <path
+                        d="M69.6165 11.9049H72.9541C78.3483 11.9049 80.4386 9.30211 80.4386 4.97535V1.59507C80.4386 1.15563 80.2026 0.919014 79.7643 0.919014H77.2695C76.8312 0.919014 76.5952 1.15563 76.5952 1.59507V5.00915C76.5952 7.57817 75.1455 8.52465 72.6844 8.52465H69.8862C67.4251 8.52465 66.0091 7.57817 66.0091 5.00915V1.59507C66.0091 1.15563 65.7731 0.919014 65.3348 0.919014H62.84C62.4018 0.919014 62.1658 1.15563 62.1658 1.59507V4.97535C62.1658 9.30211 64.2223 11.9049 69.6165 11.9049ZM62.1658 23.9049C62.1658 24.3444 62.4018 24.581 62.84 24.581H65.3348C65.7731 24.581 66.0091 24.3444 66.0091 23.9049V20.4908C66.0091 17.9218 67.4251 16.9754 69.8862 16.9754H72.6844C75.1455 16.9754 76.5952 17.9218 76.5952 20.4908V23.9049C76.5952 24.3444 76.8312 24.581 77.2695 24.581H79.7643C80.2026 24.581 80.4386 24.3444 80.4386 23.9049V20.5246C80.4386 16.1979 78.3483 13.5951 72.9541 13.5951H69.6165C64.2223 13.5951 62.1658 16.1979 62.1658 20.5246V23.9049Z"
+                        fill="#FFFAE9" />
+                    <path
+                        d="M91.0774 24.75H93.5385C98.9326 24.75 101.63 22.7218 101.63 19.3077C101.63 18.8683 101.394 18.6317 100.955 18.6317H98.4944C98.0898 18.6317 97.7864 18.8683 97.7864 19.3077C97.7864 20.8289 95.8647 21.3697 94.1453 21.3697H91.7516C88.7174 21.3697 87.3014 20.457 87.3014 17.8542V15.488H101.057C101.461 15.488 101.697 15.2514 101.697 14.812V7.00352C101.697 3.04859 99.3372 0.75 94.415 0.75H91.0774C85.5146 0.75 83.4581 3.35282 83.4581 7.67958V17.8204C83.4581 22.1472 85.5146 24.75 91.0774 24.75ZM87.3014 12.3444V7.74718C87.3014 5.14437 88.7174 4.23169 91.3471 4.23169H94.1453C96.2356 4.23169 97.8538 4.94155 97.8538 7.00352V12.3444H87.3014Z"
+                        fill="#FFFAE9" />
+                    <path
+                        d="M106.564 24.581H109.059C109.497 24.581 109.733 24.3444 109.733 23.9049V7.74718C109.733 5.17817 111.149 4.23169 113.779 4.23169H116.577C119.207 4.23169 120.657 5.17817 120.657 7.74718V23.9049C120.657 24.3444 120.893 24.581 121.331 24.581H123.826C124.264 24.581 124.5 24.3444 124.5 23.9049V7.67958C124.5 3.35282 122.41 0.75 116.847 0.75H113.509C107.947 0.75 105.89 3.35282 105.89 7.67958V23.9049C105.89 24.3444 106.126 24.581 106.564 24.581Z"
+                        fill="#FFFAE9" />
+                </svg>
             </a>
-            <div class="lg:w-2/5 inline-flex lg:justify-end ml-5 lg:ml-0">
-                <button><a href="https://tiny.cc/XelXen"
-                        class="inline-flex items-center text-white ring ring-red-500 focus:outline-none transition duration-500 ease-in-out transform hover:scale-110 rounded-md py-1 px-3 focus:outline-none select-none text-base mt-4 md:mt-0">YouTube
-                        <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
-                            stroke-width="2" class="w-4 h-4 ml-1" viewBox="0 0 24 24">
-                            <path d="M5 12h14M12 5l7 7-7 7"></path>
-                        </svg>
-                    </a></button>
-            </div>
+            <nav class="md:ml-auto flex flex-wrap items-center text-white text-base justify-center">
+                <a class="mr-5 cursor-pointer text-maincolor-200 hover:text-maincolor-100 invisible lg:visible">Ohio</a>
+                <a class="mr-5 cursor-pointer text-maincolor-200 hover:text-maincolor-100 invisible lg:visible">Amogus</a>
+                <a class="mr-5 cursor-pointer text-maincolor-200 hover:text-maincolor-100 invisible lg:visible">Tate</a>
+                <a class="mr-5 cursor-pointer text-maincolor-200 hover:text-maincolor-100 invisible lg:visible">Memeui</a>
+            </nav>
         </div>
     </header>
-
-    <section class="text-gray-300 body-font">
-        <div class="container mx-auto flex px-5 py-24 items-center justify-center flex-col">
-            <img class="lg:w-2/6 md:w-3/6 w-5/6 mb-10 object-cover object-center rounded-3xl" alt="hero"
-                src="/media/hero.png">
-            <div class="text-center lg:w-2/3 w-full">
-                <h1 class="title-font sm:text-4xl text-3xl mb-4 font-medium select-none text-white">127.0.0.1</h1>
-                <p class="leading-relaxed select-none mb-8">I am a 13 year old kid who likes Linux, Android development
-                    and many
-                    coding languages</p>
-                <div class="flex justify-center">
-                    <button><a href="/Downloads"
-                            class="inline-flex bg-white ring ring-white text-black select-none py-2 px-6 focus:outline-none transition duration-500 ease-in-out transform hover:scale-110 rounded-lg text-lg">Downloads</a></button>
-                    <button><a href="/Blogs"
-                            class="ml-4 ring ring-white inline-flex text-white select-none transition duration-500 ease-in-out transform hover:scale-110 border-0 py-2 px-6 rounded-lg text-lg">Blogs</a></button>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <section class="text-gray-300 rounded-t-3xl bg-opacity-40 ring-4 ring-white ring-opacity-10 bg-black body-font">
-        <div class="container px-5 py-24 mx-auto">
-            <div class="flex flex-wrap w-full mb-20">
-                <div class="lg:w-1/2 w-full mb-6 lg:mb-0">
-                    <h1 class="sm:text-3xl text-2xl font-medium title-font select-none mb-7 text-white">My Videos</h1>
-                    <div class="h-1 w-20 bg-red-500 rounded"></div>
-                </div>
-                <p class="lg:w-1/2 w-full leading-relaxed select-none text-gray-300 text-opacity-90">These are some of
-                    the videos
-                    that I love. They are the ones took the most time while making but at last I finally got a good
-                    video to present</p>
-            </div>
-            <div class="flex flex-wrap -m-4">
-                <div class="xl:w-1/4 md:w-1/2 p-4">
-                    <div class="ring ring-gray-500 p-6 rounded-2xl">
-                        <a href="https://www.youtube.com/watch?v=RBX7xlm20OY&list=PLz1YQdOEqf092Hhmbh6Z70kmbT1-hI2SB"><img
-                                class="h-40 rounded-xl ring ring-white w-full object-cover object-center mb-6"
-                                src="/media/1.jpg" alt="content"></a>
-                        <h3 class="tracking-widest text-indigo-400 text-xs select-none font-medium title-font">HACKING
-                        </h3>
-                        <h2 class="text-lg text-white font-medium select-none title-font mb-4">HACX</h2>
-                        <p class="leading-relaxed select-none text-base">The whole series was made such as guys who like
-                            automating
-                            hacks and do stuff like hacking will love the series.</p>
-                    </div>
-                </div>
-                <div class="xl:w-1/4 md:w-1/2 p-4">
-                    <div class="ring ring-gray-500 p-6 rounded-2xl">
-                        <a href="https://www.youtube.com/watch?v=rw-ki2fOboo"><img
-                                class="h-40 rounded-xl ring ring-red-600 w-full object-cover object-center mb-6"
-                                src="/media/2.jpg" alt="content"></a>
-                        <h3 class="tracking-widest text-indigo-400 select-none text-xs font-medium title-font">WINDOWS
-                            MODDING</h3>
-                        <h2 class="text-lg text-white select-none font-medium title-font mb-4">Remove Cortana</h2>
-                        <p class="leading-relaxed select-none text-base">A video which is made for users who hate
-                            bloatware like
-                            Cortana and wants to remove it.</p>
-                    </div>
-                </div>
-                <div class="xl:w-1/4 md:w-1/2 p-4">
-                    <div class="ring ring-gray-500 p-6 rounded-2xl">
-                        <a href="https://www.youtube.com/watch?v=WWnl_9JaoPU"><img
-                                class="h-40 rounded-xl ring ring-green-500 w-full object-cover object-center mb-6"
-                                src="/media/3.jpg" alt="content"></a>
-                        <h3 class="tracking-widest select-none text-indigo-400 text-xs font-medium title-font">OPERATING
-                            SYSTEMS
-                        </h3>
-                        <h2 class="text-lg text-white select-none font-medium title-font mb-4">Making Bootable media
-                        </h2>
-                        <p class="leading-relaxed select-none text-base">A video made for users who usually wants to
-                            switch between
-                            operating systems usually.</p>
-                    </div>
-                </div>
-                <div class="xl:w-1/4 md:w-1/2 p-4">
-                    <div class="ring ring-gray-500 p-6 rounded-2xl">
-                        <a href="https://www.youtube.com/watch?v=biOSZ95Vfds"><img
-                                class="h-40 rounded-xl ring ring-blue-700 w-full object-cover object-center mb-6"
-                                src="/media/4.jpg" alt="content"></a>
-                        <h3 class="tracking-widest text-indigo-400 text-xs font-medium select-none title-font">
-                            VIRTUALISATION</h3>
-                        <h2 class="text-lg text-white font-medium select-none title-font mb-4">Making Virtual Machines
-                        </h2>
-                        <p class="leading-relaxed select-none text-base">A video made for those people who loves to do
-                            stuff like
-                            developement and experiments using VMs</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <footer class="text-gray-400 body-font">
-        <div class="container px-5 py-8 mx-auto flex items-center sm:flex-row flex-col">
-            <a class="flex title-font font-medium items-center md:justify-start justify-center text-white">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-linecap="round"
-                    stroke-linejoin="round" stroke-width="1" class="w-10 h-10 text-black p-2 bg-white rounded-xl"
-                    viewBox="-1 4 18 8">
-                    <path
-                        d="M10.478 1.647a.5.5 0 1 0-.956-.294l-4 13a.5.5 0 0 0 .956.294l4-13zM4.854 4.146a.5.5 0 0 1 0 .708L1.707 8l3.147 3.146a.5.5 0 0 1-.708.708l-3.5-3.5a.5.5 0 0 1 0-.708l3.5-3.5a.5.5 0 0 1 .708 0zm6.292 0a.5.5 0 0 0 0 .708L14.293 8l-3.147 3.146a.5.5 0 0 0 .708.708l3.5-3.5a.5.5 0 0 0 0-.708l-3.5-3.5a.5.5 0 0 0-.708 0z">
-                    </path>
-                </svg>
-                <span class="ml-3 select-none text-xl">XelXen</span>
-            </a>
-            <p
-                class="text-sm text-gray-400 select-none sm:ml-4 sm:pl-4 sm:border-l-2 sm:border-gray-800 sm:py-2 sm:mt-0 mt-4">
-                ©
-                2021 XELTE XYNOS —
-                <a href="https://t.me/XelXen" class="text-gray-500 select-none ml-1" target="_blank"
-                    rel="noopener noreferrer">@xelxen</a>
-            </p>
-            <span class="inline-flex sm:ml-auto sm:mt-0 mt-4 justify-center sm:justify-start">
-                <a href="mailto:xelxen@orangefox.tech" class="text-gray-500">
-                    <svg fill="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"
-                        class="w-5 h-5" viewBox="0 0 16 15">
-                        <path
-                            d="M.05 3.555A2 2 0 0 1 2 2h12a2 2 0 0 1 1.95 1.555L8 8.414.05 3.555zM0 4.697v7.104l5.803-3.558L0 4.697zM6.761 8.83l-6.57 4.027A2 2 0 0 0 2 14h12a2 2 0 0 0 1.808-1.144l-6.57-4.027L8 9.586l-1.239-.757zm3.436-.586L16 11.801V4.697l-5.803 3.546z">
-                        </path>
-                    </svg>
-                </a>
-                <a href="https://tiny.cc/XelXen" class="ml-3 text-gray-500">
-                    <svg fill="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        class="w-5 h-5" viewBox="0 0 16 15">
-                        <path
-                            d="M8.051 1.999h.089c.822.003 4.987.033 6.11.335a2.01 2.01 0 0 1 1.415 1.42c.101.38.172.883.22 1.402l.01.104.022.26.008.104c.065.914.073 1.77.074 1.957v.075c-.001.194-.01 1.108-.082 2.06l-.008.105-.009.104c-.05.572-.124 1.14-.235 1.558a2.007 2.007 0 0 1-1.415 1.42c-1.16.312-5.569.334-6.18.335h-.142c-.309 0-1.587-.006-2.927-.052l-.17-.006-.087-.004-.171-.007-.171-.007c-1.11-.049-2.167-.128-2.654-.26a2.007 2.007 0 0 1-1.415-1.419c-.111-.417-.185-.986-.235-1.558L.09 9.82l-.008-.104A31.4 31.4 0 0 1 0 7.68v-.123c.002-.215.01-.958.064-1.778l.007-.103.003-.052.008-.104.022-.26.01-.104c.048-.519.119-1.023.22-1.402a2.007 2.007 0 0 1 1.415-1.42c.487-.13 1.544-.21 2.654-.26l.17-.007.172-.006.086-.003.171-.007A99.788 99.788 0 0 1 7.858 2h.193zM6.4 5.209v4.818l4.157-2.408L6.4 5.209z">
-                        </path>
-                    </svg>
-                </a>
-                <a href="https://t.me/XelXen" class="ml-3 text-gray-500">
-                    <svg fill="currentColor" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
-                        stroke-width="0" class="w-5 h-5" viewBox="0 1 17 14">
-                        <path stroke="none"
-                            d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM8.287 5.906c-.778.324-2.334.994-4.666 2.01-.378.15-.577.298-.595.442-.03.243.275.339.69.47l.175.055c.408.133.958.288 1.243.294.26.006.549-.1.868-.32 2.179-1.471 3.304-2.214 3.374-2.23.05-.012.12-.026.166.016.047.041.042.12.037.141-.03.129-1.227 1.241-1.846 1.817-.193.18-.33.307-.358.336a8.154 8.154 0 0 1-.188.186c-.38.366-.664.64.015 1.088.327.216.589.393.85.571.284.194.568.387.936.629.093.06.183.125.27.187.331.236.63.448.997.414.214-.02.435-.22.547-.82.265-1.417.786-4.486.906-5.751a1.426 1.426 0 0 0-.013-.315.337.337 0 0 0-.114-.217.526.526 0 0 0-.31-.093c-.3.005-.763.166-2.984 1.09z">
-                        </path>
-                        <circle cx="4" cy="4" r="2" stroke="none"></circle>
-                    </svg>
-                </a>
-            </span>
-        </div>
-    </footer>
 
 </body>
 

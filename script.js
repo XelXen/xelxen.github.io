@@ -308,6 +308,125 @@ function drawAxisLabels() {
   }
 }
 
+// ── SIMPLE VIEW ───────────────────────────────────────────
+const SIMPLE_SECTIONS = [
+  { type: "research", title: "Research" },
+  { type: "experience", title: "Experience" },
+  { type: "project", title: "Projects" },
+  { type: "leadership", title: "Leadership" },
+  { type: "connect", title: "Connect" },
+];
+
+const headerTagline = document.querySelector("#header .tagline");
+
+let simpleViewBuilt = false;
+
+function renderSimpleIntro(node) {
+  const p = node.panel;
+  let html = `<div class="sv-intro">`;
+  html += `<div class="sv-intro-name">${node.label}</div>`;
+  if (p.subtitle) html += `<div class="sv-intro-subtitle">${p.subtitle}</div>`;
+  if (p.body) {
+    const paragraphs = p.body.split("\n\n").map(s => s.trim()).filter(Boolean);
+    html += `<div class="sv-intro-body">${paragraphs.map(s =>
+      `<p>${s.replace(/\n/g, "<br>")}</p>`
+    ).join("")}</div>`;
+  }
+  if (p.kv) {
+    html += `<div class="sv-intro-kv">${p.kv.map(([k, v]) =>
+      `<div class="sv-kv"><span class="k">${k}</span><span class="v">${v}</span></div>`
+    ).join("")}</div>`;
+  }
+  if (p.tags) {
+    html += `<div class="sv-tags">${p.tags.map(t =>
+      `<span class="sv-tag">${t}</span>`
+    ).join("")}</div>`;
+  }
+  html += "</div>";
+  return html;
+}
+
+function renderSimpleCard(node) {
+  const p = node.panel;
+  let html = `
+    <article class="sv-card">
+      <h3 class="sv-card-title">${p.title}</h3>
+      ${p.subtitle ? `<div class="sv-card-subtitle">${p.subtitle}</div>` : ""}
+  `;
+
+  if (p.body) {
+    const paragraphs = p.body.split("\n\n").map(s => s.trim()).filter(Boolean);
+    html += `<div class="sv-card-body">${paragraphs.map(s =>
+      `<p>${s.replace(/\n/g, "<br>")}</p>`
+    ).join("")}</div>`;
+  }
+
+  if (p.kv) {
+    html += p.kv.map(([k, v]) =>
+      `<div class="sv-kv"><span class="k">${k}</span><span class="v">${v}</span></div>`
+    ).join("");
+  }
+
+  if (p.list) {
+    html += `<ul class="sv-list">${p.list.map(i => `<li>${i}</li>`).join("")}</ul>`;
+  }
+
+  if (p.tags) {
+    html += `<div class="sv-tags">${p.tags.map(t =>
+      `<span class="sv-tag">${t}</span>`
+    ).join("")}</div>`;
+  }
+
+  if (node.link) {
+    const linkText = typeof node.link === "string" ? "Visit" : node.link.k;
+    const linkHref = typeof node.link === "string" ? node.link : node.link.v;
+    html += `<div class="sv-links"><a class="sv-link" href="${linkHref}" target="_blank" rel="noopener">${linkText} ↗</a></div>`;
+  }
+
+  if (p.links) {
+    html += `<div class="sv-links">${p.links.map(l =>
+      `<a class="sv-link" href="${l.url}" target="_blank" rel="noopener">${l.label} ↗</a>`
+    ).join("")}</div>`;
+  }
+
+  html += "</article>";
+  return html;
+}
+
+function buildSimpleView() {
+  if (simpleViewBuilt) return;
+  const inner = document.getElementById("simple-inner");
+  const identity = NODES.find(n => n.type === "identity");
+  let html = identity ? renderSimpleIntro(identity) : "";
+
+  html += SIMPLE_SECTIONS.map(({ type, title }) => {
+    const nodes = NODES.filter(n => n.type === type);
+    if (!nodes.length) return "";
+    return `
+      <section class="sv-section">
+        <h2 class="sv-section-title">${title}</h2>
+        <div class="sv-cards">${nodes.map(renderSimpleCard).join("")}</div>
+      </section>
+    `;
+  }).join("");
+
+  inner.innerHTML = html;
+  simpleViewBuilt = true;
+}
+
+function enterSimpleView() {
+  buildSimpleView();
+  document.body.classList.add("simple-mode");
+  headerTagline.textContent = "SIMPLE VIEW";
+  document.getElementById("panel").classList.remove("visible");
+  document.getElementById("tooltip").style.display = "none";
+}
+
+function exitSimpleView() {
+  document.body.classList.remove("simple-mode");
+  headerTagline.textContent = "THE SPACE";
+}
+
 // ── NODE PANEL ────────────────────────────────────────────
 function openPanel(nodeId) {
   const node = NODES.find(n => n.id === nodeId);
@@ -317,7 +436,7 @@ function openPanel(nodeId) {
 
   const panel = document.getElementById("panel");
   document.getElementById("ph-id").textContent = `NODE::${nodeId}`;
-  document.getElementById("ph-type").textContent = node.type.toUpperCase();
+  document.getElementById("panel-simple").hidden = node.type !== "identity";
 
   const pos = nodePositions[nodeId] || node;
   const body = document.getElementById("panel-body");
@@ -375,6 +494,9 @@ document.getElementById("panel-close").addEventListener("click", () => {
   activeNode = null;
   refreshScene();
 });
+
+document.getElementById("panel-simple").addEventListener("click", enterSimpleView);
+document.getElementById("simple-back").addEventListener("click", exitSimpleView);
 
 // ── COORDINATE DISPLAY ────────────────────────────────────
 function updateCoordDisplay(px, py) {

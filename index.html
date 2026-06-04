@@ -14,7 +14,6 @@
 </head>
 
 <body>
-
   <!-- Boot sequence -->
   <div id="boot">
     <div class="boot-line" id="bl0">THE SPACE <span class="val">v0.1.0</span> — SAINAMAN VIG</div>
@@ -34,6 +33,7 @@
     <div class="logo">SAINAMAN VIG</div>
     <div class="sep"></div>
     <div class="tagline">THE SPACE</div>
+    <button type="button" id="simple-back" class="header-back-btn">THE SPACE</button>
     <div id="coord-display">
       x: <span id="cx">0.00</span> &nbsp; y: <span id="cy">0.00</span>
     </div>
@@ -65,10 +65,18 @@
   <div id="panel">
     <div id="panel-header">
       <div class="panel-id" id="ph-id">NODE::0000</div>
-      <div class="panel-type" id="ph-type">—</div>
-      <button id="panel-close">✕</button>
+      <div class="panel-header-actions">
+        <button type="button" id="panel-simple" class="panel-action-btn" hidden>SIMPLE VIEW</button>
+        <button type="button" id="panel-close" aria-label="Close panel">✕</button>
+      </div>
     </div>
     <div id="panel-body"></div>
+  </div>
+
+  <div id="simple-view">
+    <main id="simple-main" class="sv-main">
+      <div class="sv-inner" id="simple-inner"></div>
+    </main>
   </div>
 
   <div id="statusbar">

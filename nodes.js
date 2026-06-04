@@ -66,7 +66,7 @@ const NODES = [
     sx: -2.8, sy: -1.2,
     panel: {
       title: "Vig Digital Studio",
-      subtitle: "Founder / Lead Engineer",
+      subtitle: "Lead Engineer",
       body: "Designed and deployed production systems for clients, including AI-powered facial recognition and grouping infrastructure, biometric attendance systems, automation workflows, and database-backed business software.",
       list: ["AI facial recognition grouping", "Biometric attendance infrastructure", "Automation workflows", "Database-backed systems"],
       tags: ["AI", "Biometrics", "Automation", "Systems Engineering", "Full Stack"]

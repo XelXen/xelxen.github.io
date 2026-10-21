@@ -16,10 +16,31 @@
       display: flex; align-items: center; justify-content: center;
       user-select: none;
     }
-    div { font-size: 10px; letter-spacing: 0.12em; text-align: center; }
+    .error { font-size: 10px; letter-spacing: 0.12em; text-align: center; }
+    .return-link {
+      display: inline-block;
+      margin-top: 20px;
+      padding: 8px 12px;
+      border: 1px solid #2a2a2a;
+      color: #e8e8e8;
+      text-decoration: none;
+      letter-spacing: 0.12em;
+      transition: color 0.15s, border-color 0.15s, background 0.15s;
+    }
+    .return-link:hover {
+      border-color: #e8e8e8;
+      background: #141414;
+    }
+    .return-link:focus-visible {
+      outline: 1px solid #e8e8e8;
+      outline-offset: 3px;
+    }
   </style>
 </head>
 <body>
-  <div>ERROR: PAGE NOT FOUND</div>
+  <div class="error">
+    <div>ERROR: PAGE NOT FOUND</div>
+    <a class="return-link" href="/">&larr; RETURN TO THE SPACE</a>
+  </div>
 </body>
 </html>

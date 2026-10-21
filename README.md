@@ -2,7 +2,7 @@
 
 Static portfolio site built as a **2D spatial graph** over an SVG coordinate field, with an alternate **document layout** (Simple View). No build step, framework, or backend: plain HTML, CSS, and client-side JavaScript served as static assets (e.g. GitHub Pages).
 
-**Version:** `0.3.0`
+**Version:** `0.3.1`
 
 ---
 

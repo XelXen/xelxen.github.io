@@ -434,15 +434,13 @@ const EDGES = [
   ["N04", "N06"],
   ["N01", "N06"],
 
-  // Leadership / hardware.
+  // Leadership.
   ["N06", "N07"],
   ["N06", "N08"],
   ["N06", "N09"],
-  ["N08", "N17"],
 
-  // Personal systems projects.
-  ["N10", "N11"],
-  ["N11", "N12"],
+  // GyroHand is a personal project, connected directly to the identity.
+  ["N00", "N17"],
 
   // Open-source / product projects.
   ["N10", "N14"],

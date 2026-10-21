@@ -218,7 +218,7 @@ const NODES = [
     label: "CRISP",
     shortLabel: "CRISP",
     type: "project",
-    sx: 3.2, sy: 1.3,
+    sx: 3.0, sy: 2.5,
     link: { k: "View Repo", v: "https://github.com/XelXen/crisp" },
     panel: {
       title: "Crisp",
@@ -237,7 +237,7 @@ const NODES = [
     label: "BLACKBOLDOS",
     shortLabel: "BLACKBOLD",
     type: "project",
-    sx: 3.0, sy: 2.5,
+    sx: 3.2, sy: 1.3,
     link: { k: "View Repo", v: "https://github.com/XelXen/BlackBoldOS" },
     panel: {
       title: "BlackBoldOS",
@@ -429,6 +429,11 @@ const EDGES = [
   ["N03", "N04"],
   ["N03", "N05"],
 
+  // Penn State triangle: HLT Lab, MATH 141, GDG @ PSU.
+  ["N01", "N04"],
+  ["N04", "N06"],
+  ["N01", "N06"],
+
   // Leadership / hardware.
   ["N06", "N07"],
   ["N06", "N08"],
@@ -440,6 +445,9 @@ const EDGES = [
   ["N11", "N12"],
 
   // Open-source / product projects.
+  ["N10", "N14"],
+  ["N11", "N14"],
+  ["N12", "N14"],
   ["N13", "N14"],
   ["N14", "N15"],
   ["N14", "N16"],

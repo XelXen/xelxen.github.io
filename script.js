@@ -1,5 +1,77 @@
 const SVG_NS = "http://www.w3.org/2000/svg";
 
+// ── THEME ──────────────────────────────────────────────────
+const SYSTEM_LIGHT = window.matchMedia("(prefers-color-scheme: light)");
+let themeOverride = null;
+
+function currentTheme() {
+  return themeOverride || (SYSTEM_LIGHT.matches ? "light" : "dark");
+}
+
+function themePalette() {
+  const light = document.documentElement.dataset.theme === "light";
+  return light ? {
+    active: "#1d1b17",
+    identity: "#1d1b17",
+    research: "#3f3a32",
+    experience: "#6f695e",
+    project: "#8b8375",
+    leadership: "#a79e8e",
+    connect: "#236a9c",
+    labelActive: "#1d1b17",
+    label: "#4f4a42",
+    coordActive: "#6f695e",
+    coord: "#8f8779",
+    edgeHighlight: "rgba(29,27,23,0.48)",
+    edge: "rgba(29,27,23,0.18)",
+    arrow: "rgba(29,27,23,0.26)",
+    pulse: "rgba(29,27,23,0.14)",
+  } : {
+    active: "#ffffff",
+    identity: "#e0e0e0",
+    research: "#aaaaaa",
+    experience: "#707070",
+    project: "#555555",
+    leadership: "#444444",
+    connect: "#4a9eff",
+    labelActive: "#cccccc",
+    label: "#666666",
+    coordActive: "#4a4a4a",
+    coord: "#2e2e2e",
+    edgeHighlight: "rgba(255,255,255,0.45)",
+    edge: "rgba(255,255,255,0.12)",
+    arrow: "rgba(255,255,255,0.20)",
+    pulse: "rgba(255,255,255,0.12)",
+  };
+}
+
+function updateThemeButton(theme) {
+  const btn = document.getElementById("theme-toggle");
+  if (!btn) return;
+  const next = theme === "light" ? "dark" : "light";
+  btn.textContent = theme === "light" ? "DARK" : "LIGHT";
+  btn.setAttribute("aria-label", `Switch to ${next} theme`);
+  btn.setAttribute("title", `Switch to ${next} theme`);
+}
+
+function applyTheme(theme, redraw = true) {
+  document.documentElement.dataset.theme = theme;
+  updateThemeButton(theme);
+  // buildScene re-renders the SVG defs (arrow marker) as well as the graph.
+  if (redraw && document.getElementById("gGrid")) buildScene();
+}
+
+function handleSystemThemeChange() {
+  if (!themeOverride) applyTheme(currentTheme());
+}
+
+if (SYSTEM_LIGHT.addEventListener) {
+  SYSTEM_LIGHT.addEventListener("change", handleSystemThemeChange);
+} else if (SYSTEM_LIGHT.addListener) {
+  SYSTEM_LIGHT.addListener(handleSystemThemeChange);
+}
+
+
 // ── BOOT SEQUENCE ─────────────────────────────────────────
 (function bootSequence() {
   const lines = [0, 1, 2, 3, 4, 5].map(i => document.getElementById(`bl${i}`));
@@ -33,6 +105,7 @@ let scale = 90;
 let panX = 0, panY = 0;
 let activeNode = null;
 let mouseX = 0, mouseY = 0;
+let userAdjustedView = false;
 
 let isDraggingCanvas = false;
 let dragStartX = 0, dragStartY = 0;
@@ -78,7 +151,7 @@ function buildScene() {
   el("path", {
     d: "M0,1 L6,3 L0,5",
     fill: "none",
-    stroke: "rgba(255,255,255,0.15)",
+    stroke: themePalette().arrow,
     "stroke-width": "0.8"
   }, marker);
 
@@ -144,6 +217,7 @@ function drawGrid() {
 
 function drawEdges() {
   gEdges.innerHTML = "";
+  const palette = themePalette();
   for (const [aId, bId] of EDGES) {
     const aPos = nodePositions[aId] || NODES.find(n => n.id === aId);
     const bPos = nodePositions[bId] || NODES.find(n => n.id === bId);
@@ -156,7 +230,7 @@ function drawEdges() {
       class: "edge-line",
       x1: pa.x, y1: pa.y,
       x2: pb.x, y2: pb.y,
-      stroke: isHighlighted ? "rgba(255,255,255,0.35)" : "rgba(255,255,255,0.07)",
+      stroke: isHighlighted ? palette.edgeHighlight : palette.edge,
       "stroke-width": isHighlighted ? "1" : "0.7",
       "stroke-dasharray": isHighlighted ? "4 4" : "2 6",
       "marker-end": isHighlighted ? "url(#arrow)" : "none",
@@ -166,20 +240,14 @@ function drawEdges() {
 }
 
 function getNodeStroke(type, isActive) {
-  if (isActive) return "#ffffff";
-  const map = {
-    identity: "#e0e0e0",
-    research: "#aaaaaa",
-    experience: "#707070",
-    project: "#555555",
-    leadership: "#444444",
-    connect: "#4a9eff",
-  };
-  return map[type] || "#555";
+  const palette = themePalette();
+  if (isActive) return palette.active;
+  return palette[type] || palette.project;
 }
 
 function drawNodes() {
   gNodes.innerHTML = "";
+  const palette = themePalette();
   for (const node of NODES) {
     const pos = nodePositions[node.id] || node;
     const { x, y } = toScreen(pos.sx, pos.sy);
@@ -206,14 +274,14 @@ function drawNodes() {
     el("circle", {
       class: "node-dot",
       cx: x, cy: y, r: node.type === "identity" ? 3 : 1.8,
-      fill: isActive ? "#fff" : strokeColor,
+      fill: isActive ? palette.active : strokeColor,
       "data-id": node.id
     }, g);
 
     if (isActive) {
       el("circle", {
         cx: x, cy: y, r: r + 6,
-        fill: "none", stroke: "rgba(255,255,255,0.12)",
+        fill: "none", stroke: palette.pulse,
         "stroke-width": "1",
         "stroke-dasharray": "2 3",
         "pointer-events": "none"
@@ -229,18 +297,20 @@ function drawNodes() {
     const ly = y + 4;
     const lbl = el("text", {
       class: "node-label", x: lx, y: ly,
-      fill: isActive ? "#ccc" : "#666"
+      fill: isActive ? palette.labelActive : palette.label
     }, g);
     lbl.textContent = node.shortLabel;
 
-    const coordTxt = el("text", {
-      class: "node-label", x: lx, y: ly + 13,
-      "font-size": "7.5",
-      fill: isActive ? "#4a4a4a" : "#2e2e2e"
-    }, g);
-    const psx = pos.sx.toFixed(1);
-    const psy = pos.sy.toFixed(1);
-    coordTxt.textContent = `(${psx}, ${psy})`;
+    if (W >= 620) {
+      const coordTxt = el("text", {
+        class: "node-label node-coord", x: lx, y: ly + 13,
+        "font-size": "7.5",
+        fill: isActive ? palette.coordActive : palette.coord
+      }, g);
+      const psx = pos.sx.toFixed(1);
+      const psy = pos.sy.toFixed(1);
+      coordTxt.textContent = `(${psx}, ${psy})`;
+    }
 
     // Hover tooltip (mouse)
     g.addEventListener("mouseenter", (e) => {
@@ -289,18 +359,27 @@ function drawNodes() {
 }
 
 function drawAxisLabels() {
-  const ox = originX + panX, oy = originY + panY;
-  const labels = [
-    { text: "BREADTH →", x: W - 90, y: oy - 8 },
-    { text: "SCOPE ↑", x: ox + 8, y: 50 },
-    { text: "PAST ↓", x: ox + 8, y: H - 50 },
-    { text: "← DEPTH", x: 20, y: oy - 8 },
+  const cx = W / 2;
+  const compact = W < 760;
+  const ultraCompact = W < 420;
+  const labels = ultraCompact ? [
+    { text: "RESEARCH ↑", x: cx + 8, y: 50 },
+    { text: "PAST ↓", x: cx + 8, y: H - 50 },
+  ] : compact ? [
+    { text: "PROJECTS →", x: W - 100, y: 50 },
+    { text: "RESEARCH ↑", x: cx + 8, y: 50 },
+    { text: "PAST ↓", x: cx + 8, y: H - 50 },
+    { text: "← EXPERIENCE", x: 20, y: H - 50 },
+  ] : [
+    { text: "PROJECTS / SYSTEMS →", x: W - 160, y: 50 },
+    { text: "RESEARCH / CURRENT ↑", x: cx + 8, y: 50 },
+    { text: "PAST ↓", x: cx + 8, y: H - 50 },
+    { text: "← EXPERIENCE / LEADERSHIP", x: 20, y: H - 50 },
   ];
   for (const { text, x, y } of labels) {
     const t = el("text", {
-      class: "axis-label",
+      class: "axis-label axis-caption",
       x, y,
-      fill: "#2a2a2a",
       "font-size": "8",
       "letter-spacing": "0.12em"
     }, gGrid);
@@ -425,6 +504,7 @@ function enterSimpleView() {
 function exitSimpleView() {
   document.body.classList.remove("simple-mode");
   headerTagline.textContent = "THE SPACE";
+  fullRebuild();
 }
 
 // ── NODE PANEL ────────────────────────────────────────────
@@ -498,6 +578,11 @@ document.getElementById("panel-close").addEventListener("click", () => {
 document.getElementById("panel-simple").addEventListener("click", enterSimpleView);
 document.getElementById("simple-back").addEventListener("click", exitSimpleView);
 
+document.getElementById("theme-toggle").addEventListener("click", () => {
+  themeOverride = currentTheme() === "light" ? "dark" : "light";
+  applyTheme(themeOverride);
+});
+
 // ── COORDINATE DISPLAY ────────────────────────────────────
 function updateCoordDisplay(px, py) {
   const { sx, sy } = toSpace(px, py);
@@ -512,11 +597,42 @@ function refreshScene() {
   drawNodes();
 }
 
+function fitGraphToViewport() {
+  const xs = NODES.map(n => (nodePositions[n.id] || n).sx);
+  const ys = NODES.map(n => (nodePositions[n.id] || n).sy);
+  const compact = W < 760;
+  const minX = Math.min(...xs) - 0.3;
+  const maxX = Math.max(...xs);
+  const minY = Math.min(...ys) - 0.45;
+  const maxY = Math.max(...ys) + 0.45;
+  const padX = compact ? 12 : 20;
+  const padTop = 60;
+  const padBottom = compact ? 50 : 55;
+  const labelPx = 64;
+  const fit = Math.min(
+    (W - padX * 2 - labelPx) / (maxX - minX),
+    (H - padTop - padBottom) / (maxY - minY),
+    90
+  );
+  scale = Math.max(24, fit);
+
+  const contentW = (maxX - minX) * scale + labelPx;
+  panX = (W - contentW) / 2 - originX - minX * scale;
+
+  const contentH = (maxY - minY) * scale;
+  const top = padTop + (H - padBottom - padTop - contentH) / 2;
+  panY = top - originY + maxY * scale;
+
+  document.getElementById("s-zoom").textContent = (scale / 90).toFixed(2) + "×";
+}
+
 function fullRebuild() {
+  if (document.body.classList.contains("simple-mode")) return;
   W = svg.clientWidth;
   H = svg.clientHeight;
   originX = W * 0.5;
   originY = H * 0.52;
+  if (!userAdjustedView) fitGraphToViewport();
   buildScene();
   document.getElementById("s-nodes").textContent = NODES.length;
   document.getElementById("s-edges").textContent = EDGES.length;
@@ -564,6 +680,7 @@ svg.addEventListener("mousemove", (e) => {
 
 svg.addEventListener("mousedown", (e) => {
   if (!isDraggingNode) {
+    userAdjustedView = true;
     isDraggingCanvas = true;
     dragStartX = e.clientX;
     dragStartY = e.clientY;
@@ -582,6 +699,7 @@ window.addEventListener("mouseup", () => {
 
 svg.addEventListener("wheel", (e) => {
   e.preventDefault();
+  userAdjustedView = true;
   const rect = svg.getBoundingClientRect();
   const px = e.clientX - rect.left;
   const py = e.clientY - rect.top;
@@ -614,6 +732,7 @@ document.addEventListener("touchend", () => {
 svg.addEventListener("touchstart", (e) => {
   // Hide tooltip when starting touch drag
   document.getElementById("tooltip").style.display = "none";
+  userAdjustedView = true;
 
   if (e.touches.length === 1) {
     isDraggingCanvas = true;
@@ -673,8 +792,5 @@ document.querySelectorAll(".leg-row").forEach(row => {
 
 // ── INIT ─────────────────────────────────────────────────
 window.addEventListener("resize", fullRebuild);
+applyTheme(currentTheme(), false);
 fullRebuild();
-
-setTimeout(() => {
-  openPanel("N00");
-}, 800);

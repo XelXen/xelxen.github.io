@@ -2,7 +2,7 @@
 
 Static portfolio site built as a **2D spatial graph** over an SVG coordinate field, with an alternate **document layout** (Simple View). No build step, framework, or backend: plain HTML, CSS, and client-side JavaScript served as static assets (e.g. GitHub Pages).
 
-**Version:** `0.2.0`
+**Version:** `0.3.0`
 
 ---
 
@@ -35,7 +35,7 @@ The app uses a **mathematical space** `(sx, sy)` mapped to **screen pixels** `(x
 | Concept | Role |
 |--------|------|
 | `originX`, `originY` | Screen position of space origin `(0, 0)`; set to ~50% × 52% of viewport on resize |
-| `scale` | Pixels per space unit; default `90`, clamped `[40, 300]` |
+| `scale` | Pixels per space unit; initial view is fitted by `fitGraphToViewport()` (max `90`), wheel/pinch clamp `[40, 300]` |
 | `panX`, `panY` | Canvas translation in pixels |
 | Y axis | **Inverted** on screen: positive `sy` renders upward |
 
@@ -53,7 +53,9 @@ toSpace(px, py):
 
 The header `#coord-display` shows live `toSpace()` values for the cursor. Grid spacing equals `scale` so one space unit aligns with one minor grid cell.
 
-**Semantic axes** (decorative labels in `drawAxisLabels()`): breadth/depth on X, scope/past on Y. These are presentation only; they do not affect layout math.
+**Semantic axes** (decorative labels in `drawAxisLabels()`): left is experience/leadership, right is projects/systems, top is research/current focus, bottom is past work plus Connect. These are presentation only; they do not affect layout math.
+
+Nodes are grouped into semantic clusters rather than scattered: research sits top-centre, projects right, experience/leadership left, and Connect at the bottom. Edges are limited to cluster anchors, short intra-cluster chains, and meaningful cross-links (for example HLT Lab ↔ BlipCode, RoboX ↔ GyroHand).
 
 ---
 
@@ -108,7 +110,8 @@ The header `#coord-display` shows live `toSpace()` values for the cursor. Grid s
 
 **Refresh strategy**
 
-- `fullRebuild()` — window resize: recomputes `W`, `H`, origin, calls `buildScene()`.
+- `fullRebuild()` — window resize: recomputes `W`, `H`, origin; refits the view if the user has not panned/zoomed, then calls `buildScene()`.
+- `fitGraphToViewport()` — computes a readable initial `scale`/pan from node bounds, label width, and viewport; shortens captions and hides coordinate sublabels at narrow widths.
 - `refreshScene()` — pan, zoom, drag, selection: redraws grid, edges, nodes only (crosshair updated on `mousemove`).
 
 Grid lines are generated for the visible viewport range using `floor`/`ceil` on pan-adjusted bounds so the field extends infinitely while panning.
@@ -219,6 +222,14 @@ IIFE in `script.js`: staggered `.show` on `#bl0`–`#bl5`, progress bar widths f
 - **Spatial:** SVG classes `.grid-minor`, `.grid-major`, `.axis-line`, `.node-circle`, `.edge-line`, legend `.leg-dot.{type}`.
 - **Modes:** `body.simple-mode` rules gate visibility; no separate HTML route.
 
+### Theme
+
+- The initial theme follows the OS via `prefers-color-scheme`; an inline head script sets `data-theme` before paint to avoid a flash.
+- `#theme-toggle` flips between light and dark for the current session only — no `localStorage` or cookie persistence.
+- If the user has not toggled, a system theme change updates the site live.
+- CSS tokens live in `:root` (dark) and `:root[data-theme="light"]`. SVG-only colors (edges, node strokes, labels) are supplied by `themePalette()` in `script.js`; toggling calls `buildScene()` so the arrow marker and graph re-render.
+- Hard-coded SVG presentation attributes are intentionally not duplicated in CSS, so inline palette values remain effective.
+
 ---
 
 ## Script load order
@@ -295,6 +306,7 @@ index.html
 
 - No deep linking to nodes or Simple View (no URL hash/router).
 - Drag positions lost on reload.
+- Theme choice is session-only by design; it resets to the system preference on reload.
 - Legend lists five classes; `connect` exists on graph but not in legend filter list.
 - Single-page focus: no accessibility audit or i18n layer documented in code.
 - Content edits require manual updates in `nodes.js` (and optionally `index.html` chrome strings).

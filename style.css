@@ -7,6 +7,7 @@
 }
 
 :root {
+  color-scheme: dark;
   --bg: #0a0a0a;
   --fg: #e8e8e8;
   --dim: #4a4a4a;
@@ -14,9 +15,62 @@
   --accent: #ffffff;
   --grid: rgba(255, 255, 255, 0.04);
   --grid-major: rgba(255, 255, 255, 0.08);
+  --chrome-bg: rgba(10, 10, 10, 0.92);
+  --panel-bg: rgba(10, 10, 10, 0.95);
+  --tooltip-bg: rgba(10, 10, 10, 0.92);
+  --hover-bg: rgba(255, 255, 255, 0.03);
+  --body-text: #aaaaaa;
+  --list-text: #999999;
+  --axis-line: rgba(255, 255, 255, 0.12);
+  --axis-label: #333333;
+  --origin-mark: rgba(255, 255, 255, 0.25);
+  --legend-title: #3a3a3a;
+  --leg-border: #555555;
+  --leg-research: #e8e8e8;
+  --leg-experience: #888888;
+  --leg-project: #666666;
+  --leg-leadership: #4a4a4a;
+  --leg-identity: #ffffff;
+  --crosshair: rgba(255, 255, 255, 0.06);
+  --pulse: rgba(255, 255, 255, 0.25);
+  --boot-bg: #0a0a0a;
+  --boot-dim: #555555;
+  --hairline: rgba(255, 255, 255, 0.04);
   --node-r: 6px;
   --font-mono: "IBM Plex Mono", monospace;
   --font-sans: "IBM Plex Sans", sans-serif;
+}
+
+:root[data-theme="light"] {
+  color-scheme: light;
+  --bg: #f6f3ec;
+  --fg: #1d1b17;
+  --dim: #6f695e;
+  --mid: #d9d2c4;
+  --accent: #0e0d0b;
+  --grid: rgba(29, 27, 23, 0.05);
+  --grid-major: rgba(29, 27, 23, 0.10);
+  --chrome-bg: rgba(246, 243, 236, 0.92);
+  --panel-bg: rgba(250, 247, 240, 0.97);
+  --tooltip-bg: rgba(250, 247, 240, 0.96);
+  --hover-bg: rgba(29, 27, 23, 0.04);
+  --body-text: #4b463d;
+  --list-text: #575146;
+  --axis-line: rgba(29, 27, 23, 0.16);
+  --axis-label: #b3aa9a;
+  --origin-mark: rgba(29, 27, 23, 0.32);
+  --legend-title: #a79e8e;
+  --leg-border: #a79e8e;
+  --leg-research: #3f3a32;
+  --leg-experience: #6f695e;
+  --leg-project: #8b8375;
+  --leg-leadership: #a79e8e;
+  --leg-identity: #1d1b17;
+  --crosshair: rgba(29, 27, 23, 0.09);
+  --pulse: rgba(29, 27, 23, 0.28);
+  --boot-bg: #f6f3ec;
+  --boot-dim: #8b8375;
+  --hairline: rgba(29, 27, 23, 0.06);
 }
 
 html,
@@ -44,7 +98,7 @@ body {
   padding: 0 16px;
   gap: 24px;
   z-index: 100;
-  background: rgba(10, 10, 10, 0.92);
+  background: var(--chrome-bg);
   backdrop-filter: blur(4px);
 }
 
@@ -81,6 +135,29 @@ body {
   color: var(--fg);
 }
 
+#theme-toggle {
+  height: 22px;
+  padding: 0 8px;
+  border: 1px solid var(--mid);
+  background: none;
+  color: var(--dim);
+  cursor: pointer;
+  font-size: 9px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-mono);
+  white-space: nowrap;
+  transition: color 0.15s, border-color 0.15s;
+}
+
+#theme-toggle:hover {
+  color: var(--fg);
+  border-color: var(--fg);
+}
+
 /* ── STATUS BAR ── */
 #statusbar {
   position: fixed;
@@ -94,7 +171,7 @@ body {
   padding: 0 16px;
   gap: 24px;
   z-index: 100;
-  background: rgba(10, 10, 10, 0.92);
+  background: var(--chrome-bg);
   backdrop-filter: blur(4px);
   font-size: 10px;
   color: var(--dim);
@@ -145,7 +222,7 @@ body {
   top: 58px;
   right: 16px;
   width: 280px;
-  background: rgba(10, 10, 10, 0.95);
+  background: var(--panel-bg);
   border: 1px solid var(--mid);
   z-index: 200;
   display: none;
@@ -328,7 +405,7 @@ body {
 .panel-link-item:hover {
   color: var(--fg);
   border-color: var(--fg);
-  background: rgba(255, 255, 255, 0.03);
+  background: var(--hover-bg);
 }
 
 .panel-link-item .arrow {
@@ -339,7 +416,7 @@ body {
 .panel-body-text {
   font-size: 11px;
   line-height: 1.7;
-  color: #aaa;
+  color: var(--body-text);
   font-family: var(--font-sans);
   font-weight: 300;
   margin-bottom: 10px;
@@ -384,11 +461,11 @@ body {
 
 .panel-list li {
   font-size: 10px;
-  color: #999;
+  color: var(--list-text);
   font-family: var(--font-sans);
   font-weight: 300;
   padding: 2px 0;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+  border-bottom: 1px solid var(--hairline);
 }
 
 .panel-list li::before {
@@ -400,8 +477,6 @@ body {
 /* ── NODE SVG STYLES ── */
 .node-circle {
   fill: var(--bg);
-  stroke: #666;
-  stroke-width: 1.5;
   cursor: pointer;
   transition: stroke 0.2s;
 }
@@ -414,31 +489,25 @@ body {
 .node-label {
   font-family: "IBM Plex Mono", monospace;
   font-size: 9px;
-  fill: #888;
   letter-spacing: 0.08em;
   pointer-events: none;
 }
 
+.node-coord {
+  font-size: 7.5px;
+}
+
 .node-dot {
-  fill: #666;
   pointer-events: none;
   transition: fill 0.2s;
 }
 
-.node-circle.active ~ .node-dot,
-.node-circle.active + .node-dot {
-  fill: var(--accent);
-}
-
 .edge-line {
-  stroke: rgba(255, 255, 255, 0.1);
-  stroke-width: 0.8;
-  stroke-dasharray: 3 5;
   pointer-events: none;
 }
 
 .axis-line {
-  stroke: rgba(255, 255, 255, 0.12);
+  stroke: var(--axis-line);
   stroke-width: 0.8;
   pointer-events: none;
 }
@@ -446,8 +515,13 @@ body {
 .axis-label {
   font-family: "IBM Plex Mono", monospace;
   font-size: 9px;
-  fill: #333;
+  fill: var(--axis-label);
   letter-spacing: 0.1em;
+}
+
+.axis-caption {
+  font-size: 8px;
+  letter-spacing: 0.12em;
 }
 
 .grid-minor {
@@ -463,7 +537,7 @@ body {
 }
 
 .origin-mark {
-  stroke: rgba(255, 255, 255, 0.25);
+  stroke: var(--origin-mark);
   stroke-width: 1;
   pointer-events: none;
 }
@@ -483,7 +557,7 @@ body {
   font-size: 9px;
   text-transform: uppercase;
   letter-spacing: 0.16em;
-  color: #3a3a3a;
+  color: var(--legend-title);
   margin-bottom: 10px;
 }
 
@@ -503,31 +577,31 @@ body {
 .leg-dot {
   width: 10px;
   height: 10px;
-  border: 1.5px solid #555;
+  border: 1.5px solid var(--leg-border);
   border-radius: 50%;
   flex-shrink: 0;
   background: var(--bg);
 }
 
 .leg-dot.research {
-  border-color: #e8e8e8;
+  border-color: var(--leg-research);
 }
 
 .leg-dot.experience {
-  border-color: #888;
+  border-color: var(--leg-experience);
 }
 
 .leg-dot.project {
-  border-color: #666;
+  border-color: var(--leg-project);
 }
 
 .leg-dot.leadership {
-  border-color: #4a4a4a;
+  border-color: var(--leg-leadership);
   border-style: dashed;
 }
 
 .leg-dot.identity {
-  border-color: #fff;
+  border-color: var(--leg-identity);
   width: 14px;
   height: 14px;
 }
@@ -544,7 +618,7 @@ body {
 /* Crosshair */
 .crosshair-h,
 .crosshair-v {
-  stroke: rgba(255, 255, 255, 0.06);
+  stroke: var(--crosshair);
   stroke-width: 0.5;
   stroke-dasharray: 2 4;
   pointer-events: none;
@@ -553,7 +627,7 @@ body {
 /* Pulse ring on click */
 .pulse-ring {
   fill: none;
-  stroke: rgba(255, 255, 255, 0.25);
+  stroke: var(--pulse);
   stroke-width: 0.8;
   pointer-events: none;
   opacity: 0;
@@ -579,7 +653,7 @@ body {
 #boot {
   position: fixed;
   inset: 0;
-  background: #0a0a0a;
+  background: var(--boot-bg);
   z-index: 1000;
   display: flex;
   flex-direction: column;
@@ -609,11 +683,16 @@ body {
 }
 
 .boot-line .ok {
-  color: #555;
+  color: var(--boot-dim);
 }
 
 .boot-line .val {
   color: var(--fg);
+}
+
+.boot-foot {
+  color: var(--boot-dim);
+  font-size: 9px;
 }
 
 .boot-bar-wrap {
@@ -633,7 +712,7 @@ body {
 /* Node hover tooltip */
 #tooltip {
   position: fixed;
-  background: rgba(10, 10, 10, 0.92);
+  background: var(--tooltip-bg);
   border: 1px solid var(--mid);
   padding: 4px 8px;
   font-size: 9px;
@@ -759,7 +838,7 @@ body.simple-mode #simple-view {
 .sv-intro-body {
   font-size: 12px;
   line-height: 1.75;
-  color: #aaa;
+  color: var(--body-text);
   font-family: var(--font-sans);
   font-weight: 300;
   margin-bottom: 14px;
@@ -836,7 +915,7 @@ body.simple-mode #simple-view {
 .sv-card-body {
   font-size: 12px;
   line-height: 1.75;
-  color: #aaa;
+  color: var(--body-text);
   font-family: var(--font-sans);
   font-weight: 300;
   margin-bottom: 10px;
@@ -873,7 +952,7 @@ body.simple-mode #simple-view {
 
 .sv-list li {
   font-size: 10px;
-  color: #aaa;
+  color: var(--list-text);
   padding: 3px 0 3px 12px;
   position: relative;
 }
@@ -932,6 +1011,32 @@ body.simple-mode #simple-view {
 
 /* Mobile adjustments */
 @media (max-width: 640px) {
+  #header {
+    gap: 10px;
+    padding: 0 10px;
+  }
+
+  #header .logo {
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    white-space: nowrap;
+  }
+
+  #coord-display {
+    display: none;
+  }
+
+  #theme-toggle {
+    margin-left: auto;
+    height: 20px;
+    padding: 0 6px;
+    font-size: 8px;
+  }
+
+  body.simple-mode #theme-toggle {
+    margin-left: 0;
+  }
+
   #panel {
     width: calc(100vw - 32px);
     right: 16px;
@@ -950,11 +1055,26 @@ body.simple-mode #simple-view {
     display: none;
   }
 
+  #statusbar {
+    padding: 0 10px;
+    gap: 12px;
+  }
+
+  #statusbar .status-item {
+    gap: 4px;
+  }
+
   .sv-inner {
     padding: 16px;
   }
 
   .sv-cards {
     grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 420px) {
+  .node-label {
+    font-size: 8px;
   }
 }

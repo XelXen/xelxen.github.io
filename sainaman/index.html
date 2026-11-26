@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Sainaman Vig</title>
-<meta name="description" content="Sainaman Vig studies computer science at Penn State and builds kernels, programming languages, LLM tooling and apps. Everything he has made, in one pile you can sort.">
+<meta name="description" content="Sainaman Vig studies computer science at Penn State and builds kernels, programming languages, LLM tooling and apps. Everything he has made, in one pile you can sort, and the story of how he got here.">
 <meta name="color-scheme" content="light">
 <meta name="theme-color" content="#FFB81C">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='12' fill='%23FFB81C'/%3E%3Crect x='14' y='16' width='36' height='32' fill='%23D8187C' stroke='%23fff' stroke-width='5' transform='rotate(-8 32 32)'/%3E%3C/svg%3E">
@@ -668,23 +668,17 @@ a:hover { text-decoration-thickness: 0.16em; }
 }
 .exhibit {
   display: grid;
-  justify-items: center;
-  align-content: start;
-  gap: 0.2rem;
-  padding: 0.6rem 0.4rem 0.5rem;
+  place-items: center;
+  padding: 0.75rem 0.5rem;
   border: 2px solid var(--navy);
   border-radius: 4px;
   background: var(--white);
-  font-family: var(--font-hand);
-  font-size: 1rem;
-  line-height: 1.15;
-  text-align: center;
 }
 .exhibit:nth-child(odd) { transform: rotate(-1.5deg); }
 .exhibit:nth-child(even) { transform: rotate(1.2deg); }
 .exhibit svg {
   width: 100%;
-  max-width: 5.5rem;
+  max-width: 6rem;
   height: auto;
   overflow: visible;
 }
@@ -1285,7 +1279,7 @@ a:hover { text-decoration-thickness: 0.16em; }
         <h2 class="h2" id="pile-title">The pile, sorted</h2>
         <p class="bar__note" id="pile-note">28 things I&rsquo;ve built, taught, or helped run, sorted into five groups.</p>
         <button type="button" class="btn" id="sort-btn" hidden>Dump it back out</button>
-        <p class="hand" id="pile-hint" hidden>or keep scrolling. it sorts itself.</p>
+        <p class="hand" id="pile-hint" hidden>go on. it only takes a second.</p>
 
         <div class="picker" id="picker" hidden>
           <p class="picker__label" id="picker-label">Circle anything involving</p>
@@ -1567,7 +1561,6 @@ a:hover { text-decoration-thickness: 0.16em; }
                   <path d="M15 24 H26 M38 24 H49"/>
                   <path class="s-hot" d="M32 13 V5 M26 15 L21 8 M38 15 L43 8"/>
                 </svg>
-                the house fuse
               </li>
               <li class="exhibit">
                 <svg viewBox="0 0 64 48" focusable="false">
@@ -1576,14 +1569,12 @@ a:hover { text-decoration-thickness: 0.16em; }
                   <circle cx="30" cy="24" r="2"/>
                   <circle cx="35" cy="19" r="1.4"/>
                 </svg>
-                the chemicals
               </li>
               <li class="exhibit">
                 <svg viewBox="0 0 64 48" focusable="false">
                   <path d="M8 44 L26 5 M56 44 L38 5"/>
                   <path d="M7 40 H57 M12 31 H52 M16 22 H48 M20.5 13 H43.5"/>
                 </svg>
-                the train tracks
               </li>
               <li class="exhibit">
                 <svg viewBox="0 0 64 48" focusable="false">
@@ -1592,7 +1583,6 @@ a:hover { text-decoration-thickness: 0.16em; }
                   <path class="f-gold" d="M47 19 H61 L54 29 Z"/>
                   <path d="M47 29 H61"/>
                 </svg>
-                circuit drawings
               </li>
             </ul>
           </div>
@@ -1847,7 +1837,6 @@ a:hover { text-decoration-thickness: 0.16em; }
   const pickStatus = byId('pick-status');
   const pickClear = byId('pick-clear');
   const modeStatus = byId('mode-status');
-  const about = byId('about');
 
   const prints = Array.from(surface.querySelectorAll('.print'));
   const groups = Array.from(surface.querySelectorAll('.group'));
@@ -1860,15 +1849,12 @@ a:hover { text-decoration-thickness: 0.16em; }
   const groupWord = numberWords[groups.length] || String(groups.length);
 
   let mode = 'sorted';
-  let armed = false;      // sort once, on its own, when the pile first comes fully into view
   let drag = null;
   let zTop = prints.length + 1;
   let seed = 20;
   let flight = 0;
   let lastWidth = 0;
   let picked = null;
-  let autoTimer = 0;
-  const readyAt = performance.now();
 
   /* ---- helpers ---- */
 
@@ -2012,17 +1998,6 @@ a:hover { text-decoration-thickness: 0.16em; }
     });
   }
 
-  function dropIn() {
-    prints.forEach((p) => {
-      const to = { x: p._tx, y: p._ty, r: p._r, s: p._s };
-      const from = { x: to.x, y: to.y - 46, r: to.r + (p._z % 2 ? 9 : -9), s: to.s * 0.94 };
-      p.animate(
-        [{ transform: tf(from), opacity: 0 }, { transform: tf(to), opacity: 1 }],
-        { duration: 460, delay: 80 + p._z * 14, easing: 'cubic-bezier(0.2, 0.8, 0.3, 1)', fill: 'backwards' }
-      );
-    });
-  }
-
   function updateUi(announce) {
     const n = prints.length;
     const pile = mode === 'pile';
@@ -2032,7 +2007,7 @@ a:hover { text-decoration-thickness: 0.16em; }
       ? n + ' things I’ve built, taught, or helped run, in no order at all. Drag them around.'
       : n + ' things I’ve built, taught, or helped run, sorted into ' + groupWord + ' groups.';
     sortBtn.textContent = pile ? 'Sort the pile' : 'Dump it back out';
-    hint.hidden = !(pile && armed);
+    hint.hidden = !pile;
     picker.hidden = pile;
     if (announce) modeStatus.textContent = pile ? 'Back in a pile.' : 'Sorted into ' + groupWord + ' groups.';
   }
@@ -2052,7 +2027,7 @@ a:hover { text-decoration-thickness: 0.16em; }
       layoutPile();
       /* If the reader is deep in the grid, bring the table's top back into view. */
       const top = table.getBoundingClientRect().top;
-      if (top < 0) scrollNow(window.scrollY + top);
+      if (top < 0 && !o.stay) scrollNow(window.scrollY + top);
     } else {
       surface.classList.remove('is-pile');
       mode = 'sorted';
@@ -2061,50 +2036,6 @@ a:hover { text-decoration-thickness: 0.16em; }
 
     updateUi(o.announce !== false);
     if (animate) fly(first);
-  }
-
-  /* The pile was scrolled past without being sorted: sort it where it is,
-     and keep whatever the reader is looking at exactly where it was. */
-  function sortAbove() {
-    const body = d.body;
-    root.style.overflowAnchor = 'none';
-    body.style.overflowAnchor = 'none';
-    const before = about.getBoundingClientRect().top;
-    setMode('sorted', { animate: false });
-    const delta = about.getBoundingClientRect().top - before;
-    if (Math.abs(delta) > 0.5) scrollNow(window.scrollY + delta);
-    requestAnimationFrame(() => {
-      root.style.overflowAnchor = '';
-      body.style.overflowAnchor = '';
-    });
-  }
-
-  /* The reader took over (dragged, pressed a button, used the nav): stop sorting on our own. */
-  function disarm() {
-    armed = false;
-    clearTimeout(autoTimer);
-    hint.hidden = true;
-  }
-
-  function autoSort() {
-    if (mode !== 'pile' || drag) return;
-    hint.hidden = true;
-    if (surface.getBoundingClientRect().bottom <= 0) sortAbove();
-    else setMode('sorted');
-  }
-
-  function check(ratio) {
-    if (mode !== 'pile' || drag) return;
-    const r = surface.getBoundingClientRect();
-    if (r.bottom <= 0) { armed = false; sortAbove(); return; }
-    if (!armed) return;
-    const vh = window.innerHeight || root.clientHeight;
-    const visible = Math.min(r.bottom, vh) - Math.max(r.top, 0);
-    const seen = (typeof ratio === 'number' && ratio >= 0.8) || visible >= r.height * 0.8 || visible >= vh * 0.8;
-    if (seen) {
-      armed = false;
-      autoTimer = setTimeout(autoSort, Math.max(500, readyAt + 2200 - performance.now()));
-    }
   }
 
   /* ---- circling ---- */
@@ -2150,7 +2081,6 @@ a:hover { text-decoration-thickness: 0.16em; }
   /* ---- wiring ---- */
 
   sortBtn.addEventListener('click', () => {
-    disarm();
     if (mode === 'pile') {
       setMode('sorted');
     } else {
@@ -2176,7 +2106,6 @@ a:hover { text-decoration-thickness: 0.16em; }
     if (e.pointerType === 'mouse' && e.button !== 0) return;
     const p = e.target.closest('.print');
     if (!p) return;
-    disarm();
     p.style.zIndex = String(++zTop);
     drag = { p, id: e.pointerId, x: e.clientX, y: e.clientY, tx: p._tx, ty: p._ty, moved: false };
   });
@@ -2229,17 +2158,6 @@ a:hover { text-decoration-thickness: 0.16em; }
     if (p) p.style.zIndex = String(++zTop);
   });
 
-  /* Jumping to a later section while the pile is still a pile: sort it first,
-     so the jump lands in the right place. */
-  d.addEventListener('click', (e) => {
-    const a = e.target.closest ? e.target.closest('a[href^="#"]') : null;
-    if (!a || mode !== 'pile') return;
-    const id = a.getAttribute('href').slice(1);
-    if (!id || id === 'top' || id === 'work' || !byId(id)) return;
-    disarm();
-    setMode('sorted', { animate: false });
-  });
-
   let resizeTimer = 0;
   window.addEventListener('resize', () => {
     clearTimeout(resizeTimer);
@@ -2247,13 +2165,6 @@ a:hover { text-decoration-thickness: 0.16em; }
       if (mode === 'pile' && surface.clientWidth !== lastWidth) repile();
     }, 140);
   });
-
-  let ticking = false;
-  window.addEventListener('scroll', () => {
-    if (ticking) return;
-    ticking = true;
-    requestAnimationFrame(() => { ticking = false; check(); });
-  }, { passive: true });
 
   /* Copy button in the contact band. */
   const copyBtn = byId('copy-btn');
@@ -2423,27 +2334,11 @@ a:hover { text-decoration-thickness: 0.16em; }
   sortBtn.hidden = false;
 
   const hash = (location.hash || '').slice(1);
-  const landedDeep = hash && hash !== 'top' && hash !== 'work';
-  const startPiled = canAnimate && !reduce.matches && !landedDeep;
 
-  if (startPiled) {
-    armed = true;
-    setMode('pile', { animate: false, announce: false });
-    dropIn();
-    if ('IntersectionObserver' in window) {
-      const io = new IntersectionObserver((entries) => {
-        if (!armed) { io.disconnect(); return; }
-        const entry = entries[entries.length - 1];
-        if (entry.isIntersecting) check(entry.intersectionRatio);
-      }, { threshold: [0.5, 0.8, 1] });
-      io.observe(surface);
-    }
-    requestAnimationFrame(() => check());
-    if (d.fonts && d.fonts.ready) {
-      d.fonts.ready.then(() => { if (mode === 'pile' && !drag) repile(); });
-    }
-  } else {
-    updateUi(false);
+  /* The page opens as a pile and stays one. Sorting only ever happens on the button. */
+  setMode('pile', { animate: false, announce: false, stay: true });
+  if (d.fonts && d.fonts.ready) {
+    d.fonts.ready.then(() => { if (mode === 'pile' && !drag) repile(); });
   }
 
   /* Arriving on a link to a section: late-loading fonts can nudge the layout,

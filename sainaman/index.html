@@ -1,0 +1,2466 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sainaman Vig</title>
+<meta name="description" content="Sainaman Vig studies computer science at Penn State and builds kernels, programming languages, LLM tooling and apps. Everything he has made, in one pile you can sort.">
+<meta name="color-scheme" content="light">
+<meta name="theme-color" content="#FFB81C">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='12' fill='%23FFB81C'/%3E%3Crect x='14' y='16' width='36' height='32' fill='%23D8187C' stroke='%23fff' stroke-width='5' transform='rotate(-8 32 32)'/%3E%3C/svg%3E">
+<meta property="og:title" content="Sainaman Vig">
+<meta property="og:description" content="Everything I've built, taught, or helped run, in one pile you can sort.">
+<meta property="og:type" content="website">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anek+Latin:wdth,wght@75..125,100..800&family=Kalam:wght@400;700&display=swap">
+<style>
+:root {
+  /* Layout idea: a marigold masthead, then a navy table holding one pile of prints
+     that sorts itself into groups, then a white band to read and a pink band to say hi.
+     Everything is left-aligned. Color on a print always means its group. */
+  --marigold: #FFB81C;
+  --navy: #0C2152;
+  --navy-deep: #081738;
+  --rani: #D8187C;
+  --aqua: #37CFC0;
+  --vermilion: #FF5B35;
+  --white: #FFFFFF;
+
+  --font-display: "Anek Latin", "Avenir Next", "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --font-body: "Anek Latin", "Avenir Next", "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --font-hand: "Kalam", "Bradley Hand", "Segoe Print", "Comic Sans MS", cursive;
+
+  --t-small: 0.9375rem;
+  --t-body: 1.125rem;
+  --t-lede: clamp(1.3rem, 1.1rem + 0.9vw, 1.55rem);
+  --t-h3: 1.5rem;
+  --t-h2: clamp(2.4rem, 1.7rem + 3.2vw, 4rem);
+
+  --gutter: clamp(1rem, 4vw, 3rem);
+  --measure: 38rem;
+  --lift: 0 1px 2px rgba(4, 12, 32, 0.3), 0 14px 24px -14px rgba(4, 12, 32, 0.65);
+
+  color-scheme: light;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  background: var(--marigold);
+  color: var(--navy);
+  font-family: var(--font-body);
+  font-size: var(--t-body);
+  font-weight: 400;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+h1, h2, h3, h4, p, ul, dl, dd, figure { margin: 0; }
+ul { padding: 0; list-style: none; }
+img { display: block; max-width: 100%; }
+button { font: inherit; color: inherit; }
+[hidden] { display: none !important; }
+
+a {
+  color: inherit;
+  text-decoration-thickness: 0.08em;
+  text-underline-offset: 0.18em;
+}
+a:hover { text-decoration-thickness: 0.16em; }
+
+:focus-visible {
+  outline: 3px solid currentColor;
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
+.wrap {
+  width: min(100% - 2 * var(--gutter), 82rem);
+  margin-inline: auto;
+}
+
+.h2 {
+  font-family: var(--font-display);
+  font-size: var(--t-h2);
+  font-weight: 800;
+  font-stretch: 112.5%;
+  line-height: 0.95;
+  letter-spacing: -0.02em;
+  text-wrap: balance;
+}
+
+.skip {
+  position: absolute;
+  left: var(--gutter);
+  top: -4rem;
+  z-index: 10;
+  background: var(--navy);
+  color: var(--white);
+  padding: 0.6rem 1rem;
+  font-weight: 600;
+}
+.skip:focus { top: 0.75rem; }
+
+/* ---------- Masthead ---------- */
+
+.hero {
+  position: relative;
+  z-index: 1;
+  --hero-pad: clamp(2.5rem, 6vw, 4rem);
+  background: var(--marigold);
+  padding-block: 1rem var(--hero-pad);
+}
+
+.nav {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.25rem 1rem;
+  font-weight: 600;
+}
+.nav ul {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem clamp(1rem, 3vw, 1.5rem);
+}
+.nav a {
+  display: inline-block;
+  padding-block: 0.4rem;
+}
+.nav__brand {
+  font-family: var(--font-hand);
+  font-size: 1.4rem;
+  font-weight: 700;
+  text-decoration: none;
+}
+.nav__brand:hover { text-decoration: underline; }
+
+.hero__grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 1.25rem;
+  margin-top: clamp(1.25rem, 4vw, 2.75rem);
+}
+
+.hero__namebox { container-type: inline-size; }
+
+.hero__name {
+  --fit: 5.45;
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-stretch: 125%;
+  line-height: 0.84;
+  letter-spacing: -0.025em;
+  font-size: 13.5vw;
+  font-size: calc(100cqi / var(--fit));
+  padding-bottom: 0.06em;
+}
+.hero__name span { display: block; }
+
+.snap {
+  position: relative;
+  justify-self: end;
+  width: min(62%, 16rem);
+  margin: -2.5rem 0.4rem 0 0;
+  padding: 0.5rem 0.5rem 0;
+  background: var(--white);
+  box-shadow: 0 1px 2px rgba(8, 23, 56, 0.25), 0 18px 30px -14px rgba(8, 23, 56, 0.55);
+  transform: rotate(3deg);
+}
+.snap img {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 3 / 4;
+  object-fit: cover;
+  background: #b9c6df;
+}
+.snap figcaption {
+  padding: 0.4rem 0.2rem 0.5rem;
+  font-family: var(--font-hand);
+  font-size: 1.05rem;
+  line-height: 1.2;
+  text-align: center;
+  text-wrap: balance;
+}
+
+.snap__note {
+  position: absolute;
+  right: calc(100% + 0.7rem);
+  top: 36%;
+  width: 5.4rem;
+  font-family: var(--font-hand);
+  font-size: 1.15rem;
+  line-height: 1.15;
+  text-align: right;
+  transform: rotate(-7deg);
+}
+.snap__note svg {
+  display: block;
+  width: 3.4rem;
+  height: 1.7rem;
+  margin: 0.3rem 0 0 auto;
+  overflow: visible;
+}
+.snap__note path {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2.2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.lede {
+  max-width: 34rem;
+  font-size: var(--t-lede);
+  font-weight: 500;
+  line-height: 1.3;
+  text-wrap: pretty;
+}
+
+.hero__story { max-width: 34rem; }
+.hero__story p + p { margin-top: 0.8em; }
+
+@media (min-width: 48rem) {
+  .hero__grid {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 0.58fr);
+    grid-template-areas:
+      "name  name"
+      "lede  snap"
+      "story snap";
+    column-gap: clamp(1.5rem, 4vw, 3.5rem);
+    row-gap: 1.5rem;
+    align-items: start;
+  }
+  .hero__namebox { grid-area: name; }
+  .lede { grid-area: lede; }
+  .hero__story { grid-area: story; }
+  .hero__name {
+    --fit: 7.42;
+    font-size: 11.5vw;
+    font-size: calc(100cqi / var(--fit));
+  }
+  .hero__name span { display: inline; }
+  /* The photo sits at the foot of the masthead and hangs over the edge of the table. */
+  .snap {
+    grid-area: snap;
+    align-self: end;
+    width: 100%;
+    max-width: 19rem;
+    margin: 0 0 calc(-1 * var(--hero-pad) - 3rem);
+  }
+  .snap__note { display: none; }
+}
+
+@media (min-width: 75rem) {
+  .hero__grid {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) minmax(0, 18rem);
+    grid-template-areas:
+      "name name  snap"
+      "lede story snap";
+    row-gap: 2rem;
+  }
+  .hero__name {
+    font-size: min(6.4vw, 5.8rem);
+    font-size: calc(100cqi / var(--fit));
+  }
+  .snap { max-width: none; }
+}
+
+/* ---------- The table and the pile ---------- */
+
+.table {
+  position: relative;
+  background: var(--navy-deep);
+  background-image: radial-gradient(120% 70rem at 30% 0%, #173b88 0%, var(--navy) 42%, var(--navy-deep) 100%);
+  color: var(--white);
+  padding-block: clamp(3.5rem, 7vw, 5rem) clamp(4rem, 8vw, 6rem);
+  overflow-x: clip;
+}
+
+.table__grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 2rem;
+}
+
+.bar {
+  display: grid;
+  gap: 1.1rem;
+  justify-items: start;
+  align-content: start;
+}
+.bar .h2 { font-size: clamp(2.4rem, 1.9rem + 2vw, 3.1rem); }
+.bar__note {
+  max-width: 32rem;
+  color: rgba(255, 255, 255, 0.88);
+  text-wrap: pretty;
+}
+
+.btn {
+  appearance: none;
+  -webkit-appearance: none;
+  min-height: 3.1rem;
+  padding: 0.7rem 1.4rem;
+  border: 0;
+  border-radius: 6px;
+  background: var(--marigold);
+  color: var(--navy);
+  box-shadow: 4px 4px 0 var(--rani);
+  font-family: var(--font-display);
+  font-size: 1.2rem;
+  font-weight: 800;
+  font-stretch: 112.5%;
+  line-height: 1.1;
+  cursor: pointer;
+  touch-action: manipulation;
+}
+.btn:active {
+  transform: translate(4px, 4px);
+  box-shadow: 0 0 0 var(--rani);
+}
+.btn--light {
+  background: var(--white);
+  box-shadow: 4px 4px 0 var(--navy);
+}
+.btn--light:active { box-shadow: 0 0 0 var(--navy); }
+
+.hand {
+  font-family: var(--font-hand);
+  font-size: 1.15rem;
+  line-height: 1.25;
+  color: var(--marigold);
+  transform: rotate(-2deg);
+  transform-origin: left center;
+}
+
+.picker {
+  display: grid;
+  gap: 0.6rem;
+  justify-items: start;
+}
+.picker__label { font-weight: 600; }
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+.chip {
+  appearance: none;
+  -webkit-appearance: none;
+  min-height: 2.5rem;
+  padding: 0.3rem 0.8rem;
+  border: 1.5px solid rgba(255, 255, 255, 0.55);
+  border-radius: 5px;
+  background: transparent;
+  color: var(--white);
+  font-weight: 600;
+  line-height: 1.1;
+  cursor: pointer;
+  touch-action: manipulation;
+}
+.chip:hover { border-color: var(--white); }
+.chip[aria-pressed="true"] {
+  border-color: var(--white);
+  background: var(--white);
+  color: var(--navy);
+}
+.picker__status {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.25rem 0.9rem;
+  min-height: 1.6rem;
+  font-weight: 600;
+  color: var(--marigold);
+}
+.linkbtn {
+  appearance: none;
+  -webkit-appearance: none;
+  padding: 0.2rem 0;
+  border: 0;
+  background: none;
+  color: var(--white);
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 0.18em;
+  cursor: pointer;
+}
+
+.sr {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+@media (min-width: 62rem) {
+  .table__grid {
+    grid-template-columns: 17rem minmax(0, 1fr);
+    column-gap: 2.75rem;
+    align-items: start;
+  }
+}
+@media (min-width: 62rem) and (min-height: 40rem) {
+  .bar {
+    position: sticky;
+    top: 1.5rem;
+  }
+}
+
+.surface {
+  position: relative;
+  container-type: inline-size;
+}
+
+.group + .group { margin-top: 2.75rem; }
+
+.group__title {
+  display: flex;
+  align-items: baseline;
+  gap: 0.6rem;
+  margin-bottom: 0.9rem;
+  font-family: var(--font-display);
+  font-size: var(--t-h3);
+  font-weight: 700;
+  font-stretch: 112.5%;
+  line-height: 1.1;
+}
+.group__swatch {
+  flex: none;
+  width: 0.95rem;
+  height: 0.95rem;
+  border: 2px solid var(--white);
+  background: var(--field);
+  transform: rotate(-8deg);
+}
+.group__count {
+  font-weight: 400;
+  font-stretch: 100%;
+  color: rgba(255, 255, 255, 0.62);
+}
+
+.group[data-kind="research"] { --field: var(--rani);      --on: var(--white); --mark: var(--marigold); }
+.group[data-kind="work"]     { --field: var(--aqua);      --on: var(--navy);  --mark: var(--rani); }
+.group[data-kind="teaching"] { --field: var(--vermilion); --on: var(--navy);  --mark: var(--white); }
+.group[data-kind="projects"] { --field: var(--marigold);  --on: var(--navy);  --mark: var(--rani); }
+.group[data-kind="open"]     { --field: var(--white);     --on: var(--navy);  --mark: var(--vermilion); }
+
+.prints {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 17.5rem), 1fr));
+  grid-auto-flow: dense;
+  gap: 1rem;
+}
+
+.print {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  min-width: 0;
+  padding: 1rem 1rem 0.9rem;
+  border: 0.4rem solid var(--white);
+  border-radius: 3px;
+  background: var(--field);
+  color: var(--on);
+  box-shadow: var(--lift);
+}
+.group[data-kind="open"] .print {
+  box-shadow: inset 0 0 0 1px rgba(12, 33, 82, 0.16), var(--lift);
+}
+@container (min-width: 37rem) {
+  .print--wide { grid-column: span 2; }
+}
+
+.print__title {
+  position: relative;
+  align-self: flex-start;
+  max-width: 100%;
+  font-family: var(--font-display);
+  font-size: 1.75rem;
+  font-weight: 800;
+  font-stretch: 87.5%;
+  line-height: 1;
+  letter-spacing: -0.01em;
+  overflow-wrap: anywhere;
+}
+.print__text {
+  font-size: 1.0625rem;
+  line-height: 1.4;
+  text-wrap: pretty;
+}
+.print__foot {
+  display: grid;
+  gap: 0.2rem;
+  margin-top: auto;
+  padding-top: 0.25rem;
+  font-size: var(--t-small);
+  font-weight: 600;
+  line-height: 1.3;
+}
+.print__foot a { overflow-wrap: anywhere; }
+
+.ring {
+  position: absolute;
+  left: -0.62em;
+  top: -0.46em;
+  width: calc(100% + 1.24em);
+  height: calc(100% + 0.92em);
+  overflow: visible;
+  pointer-events: none;
+}
+.ring path {
+  fill: none;
+  stroke: var(--mark);
+  stroke-width: 3.5px;
+  stroke-linecap: round;
+  vector-effect: non-scaling-stroke;
+  stroke-dasharray: 1200;
+  stroke-dashoffset: 1200;
+}
+.print.is-picked .ring path { stroke-dashoffset: 0; }
+.print.is-dim {
+  opacity: 0.34;
+  filter: saturate(0.6);
+}
+
+/* Pile state: the same prints, taken out of the grid and scattered. */
+.surface.is-pile { height: var(--pile-h, 30rem); }
+.is-pile .group + .group { margin-top: 0; }
+.is-pile .group__title {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+.is-pile .prints { display: block; }
+.is-pile .print {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: var(--w);
+  height: var(--h);
+  transform: translate(var(--tx, 0px), var(--ty, 0px)) rotate(var(--r, 0deg)) scale(var(--s, 1));
+  cursor: grab;
+  touch-action: pan-y;
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
+}
+.is-pile .print.is-held {
+  cursor: grabbing;
+  box-shadow: 0 2px 4px rgba(4, 12, 32, 0.35), 0 34px 44px -18px rgba(4, 12, 32, 0.8);
+}
+.is-flying .print { pointer-events: none; }
+
+.table :focus-visible { outline-color: var(--white); }
+.print :focus-visible { outline-color: currentColor; }
+
+@media (prefers-reduced-motion: no-preference) {
+  .ring path { transition: stroke-dashoffset 0.9s cubic-bezier(0.3, 0, 0.2, 1); }
+  .print { transition: opacity 0.25s ease, filter 0.25s ease; }
+  .btn { transition: transform 0.08s ease, box-shadow 0.08s ease; }
+}
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+}
+
+/* ---------- Story ---------- */
+
+.story {
+  --paper-lift: 0 1px 3px rgba(12, 33, 82, 0.25), 0 20px 36px -18px rgba(12, 33, 82, 0.5);
+  background-color: var(--white);
+  background-image:
+    linear-gradient(rgba(12, 33, 82, 0.055) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(12, 33, 82, 0.055) 1px, transparent 1px);
+  background-size: 1.75rem 1.75rem;
+  padding-block: clamp(4rem, 9vw, 7rem);
+  overflow-x: clip;
+}
+
+.chapters {
+  display: grid;
+  gap: clamp(4.5rem, 10vw, 8rem);
+  margin: clamp(2.75rem, 6vw, 4.5rem) 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.chapter {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 2.25rem;
+  align-items: center;
+}
+.chapter__text { max-width: 34rem; }
+.chapter__text p { text-wrap: pretty; }
+.chapter__text p + p { margin-top: 0.9em; }
+.chapter__when {
+  display: inline-block;
+  margin-bottom: 0.3rem;
+  font-family: var(--font-hand);
+  font-size: 1.45rem;
+  font-weight: 700;
+  line-height: 1.2;
+  color: var(--rani);
+  transform: rotate(-2.5deg);
+  transform-origin: left bottom;
+}
+.chapter__title {
+  margin-bottom: 1rem;
+  font-family: var(--font-display);
+  font-size: clamp(1.75rem, 1.3rem + 1.8vw, 2.6rem);
+  font-weight: 800;
+  font-stretch: 112.5%;
+  line-height: 1.02;
+  letter-spacing: -0.015em;
+  text-wrap: balance;
+}
+.chapter__show {
+  display: grid;
+  justify-items: center;
+  gap: 1rem;
+  min-width: 0;
+}
+.chapter__after { margin-top: 1.5rem; }
+
+@media (min-width: 60rem) {
+  .chapter {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    column-gap: clamp(3rem, 6vw, 6rem);
+  }
+  .chapter:nth-child(even) .chapter__text { order: 2; }
+}
+
+.hand--ink { color: var(--navy); }
+
+.btn--ink {
+  min-height: 2.75rem;
+  padding: 0.55rem 1.1rem;
+  background: var(--navy);
+  color: var(--white);
+  font-size: 1.05rem;
+}
+
+/* Chapter 1: the toy and the evidence */
+
+.exhibits {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.75rem;
+  margin-top: 1.6rem;
+  max-width: 30rem;
+}
+.exhibit {
+  display: grid;
+  justify-items: center;
+  align-content: start;
+  gap: 0.2rem;
+  padding: 0.6rem 0.4rem 0.5rem;
+  border: 2px solid var(--navy);
+  border-radius: 4px;
+  background: var(--white);
+  font-family: var(--font-hand);
+  font-size: 1rem;
+  line-height: 1.15;
+  text-align: center;
+}
+.exhibit:nth-child(odd) { transform: rotate(-1.5deg); }
+.exhibit:nth-child(even) { transform: rotate(1.2deg); }
+.exhibit svg {
+  width: 100%;
+  max-width: 5.5rem;
+  height: auto;
+  overflow: visible;
+}
+.exhibit svg * {
+  fill: none;
+  stroke: var(--navy);
+  stroke-width: 2.6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.exhibit svg .f-navy { fill: var(--navy); }
+.exhibit svg .f-white { fill: var(--white); }
+.exhibit svg .f-rani { fill: var(--rani); }
+.exhibit svg .f-gold { fill: var(--marigold); }
+.exhibit svg .s-hot { stroke: var(--vermilion); }
+@media (min-width: 30rem) {
+  .exhibits { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+}
+
+.toy {
+  display: grid;
+  justify-items: center;
+  gap: 0.6rem;
+  width: min(100%, 26rem);
+  padding: 0.9rem 1rem 1.3rem;
+  border: 0.5rem solid var(--white);
+  background: var(--marigold);
+  box-shadow: var(--paper-lift);
+  transform: rotate(1.5deg);
+}
+.toy svg {
+  width: 100%;
+  height: auto;
+  overflow: visible;
+}
+.toy .part {
+  transform-box: fill-box;
+  transform-origin: center;
+}
+.toy .p-chassis { fill: var(--navy); }
+.toy .p-battery rect { fill: var(--rani); stroke: var(--navy); stroke-width: 3; }
+.toy .p-battery .mark { fill: none; stroke: var(--white); stroke-width: 2.5; stroke-linecap: round; }
+.toy .p-motor rect { fill: var(--aqua); stroke: var(--navy); stroke-width: 3; }
+.toy .p-motor path { fill: none; stroke: var(--navy); stroke-width: 2.5; stroke-linecap: round; }
+.toy .shell { fill: var(--vermilion); stroke: var(--navy); stroke-width: 3; stroke-linejoin: round; }
+.toy .glass { fill: var(--white); stroke: var(--navy); stroke-width: 3; stroke-linejoin: round; }
+.toy .tyre { fill: var(--navy); }
+.toy .hub { fill: var(--white); }
+.toy .spoke { fill: none; stroke: var(--navy); stroke-width: 2.5; stroke-linecap: round; }
+.toy .screw circle { fill: var(--white); stroke: var(--navy); stroke-width: 2.5; }
+.toy .screw path { fill: none; stroke: var(--navy); stroke-width: 2.5; stroke-linecap: round; }
+.toy .guide {
+  fill: none;
+  stroke: var(--navy);
+  stroke-width: 2;
+  stroke-dasharray: 2 7;
+  stroke-linecap: round;
+  opacity: 0;
+}
+.toy.is-apart .guide { opacity: 0.7; }
+.toy.is-apart .p-shell { transform: translate(0, -78px) rotate(-5deg); }
+.toy.is-apart .p-battery { transform: translate(-14px, -15px) rotate(-7deg); }
+.toy.is-apart .p-motor { transform: translate(18px, -17px) rotate(8deg); }
+.toy.is-apart .p-wheel-a { transform: translate(-42px, 26px) rotate(-40deg); }
+.toy.is-apart .p-wheel-b { transform: translate(42px, 26px) rotate(40deg); }
+.toy.is-apart .p-screw-a { transform: translate(-40px, -92px) rotate(130deg); }
+.toy.is-apart .p-screw-b { transform: translate(42px, -100px) rotate(-110deg); }
+.toy.is-apart .p-screw-c { transform: translate(0, 64px) rotate(70deg); }
+
+/* Chapter 2: the sketch you can tinker with */
+
+.bench {
+  --glow: 0.64;
+  width: min(100%, 29rem);
+  border: 0.45rem solid var(--white);
+  border-radius: 3px;
+  background: #0a1536;
+  color: #e9eeff;
+  box-shadow: var(--paper-lift);
+}
+.bench__bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.4rem 0.65rem;
+  background: linear-gradient(#2c62d4, #173b88);
+  color: var(--white);
+  font-size: 0.875rem;
+  font-weight: 600;
+  line-height: 1.3;
+}
+.bench__dots {
+  display: flex;
+  flex: none;
+  gap: 0.3rem;
+}
+.bench__dots i {
+  width: 0.85rem;
+  height: 0.85rem;
+  border-radius: 2px;
+  background: rgba(255, 255, 255, 0.4);
+}
+.bench__dots i:last-child { background: var(--vermilion); }
+.bench__code {
+  padding: 0.85rem 0.75rem;
+  font-family: ui-monospace, "SF Mono", SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+  font-size: clamp(0.8125rem, 3.9vw, 1.0625rem);
+  line-height: 1.75;
+  overflow-x: auto;
+}
+.ln {
+  padding-left: 0.5rem;
+  white-space: pre;
+  box-shadow: inset 3px 0 0 transparent;
+}
+.ln.is-on {
+  background: rgba(255, 184, 28, 0.13);
+  box-shadow: inset 3px 0 0 var(--marigold);
+}
+.tok-c { color: #8f9bcb; }
+.tok-k { color: var(--aqua); }
+.tok-n { color: #b9c4ee; }
+.num {
+  display: inline-block;
+  min-width: 2.2ch;
+  padding: 0 0.2em;
+  border-radius: 3px;
+  border-bottom: 2px dotted var(--marigold);
+  background: rgba(255, 184, 28, 0.18);
+  color: var(--marigold);
+  font-weight: 700;
+  line-height: 1.35;
+  text-align: center;
+}
+.bench.is-live .num {
+  cursor: ew-resize;
+  touch-action: pan-y;
+  -webkit-user-select: none;
+  user-select: none;
+}
+.bench.is-live .num:hover,
+.num.is-scrub { background: rgba(255, 184, 28, 0.34); }
+.bench :focus-visible { outline-color: var(--white); }
+
+.bench__board {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1.1rem 1rem 1rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.16);
+  background: #0e1d4b;
+  clip-path: inset(0);
+}
+.switches {
+  display: flex;
+  gap: 0.6rem;
+}
+.sw {
+  appearance: none;
+  -webkit-appearance: none;
+  display: grid;
+  justify-items: center;
+  gap: 0.3rem;
+  min-width: 2.9rem;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  line-height: 1.15;
+  touch-action: manipulation;
+}
+.bench.is-live .sw { cursor: pointer; }
+.sw__body {
+  position: relative;
+  width: 2.75rem;
+  height: 4.25rem;
+  border-radius: 0.6rem;
+  background: #050d26;
+  box-shadow: inset 0 0 0 2px rgba(255, 255, 255, 0.3);
+}
+.sw__knob {
+  position: absolute;
+  left: 0.3rem;
+  right: 0.3rem;
+  bottom: 0.3rem;
+  height: 1.9rem;
+  border-radius: 0.4rem;
+  background: #8792b8;
+}
+.sw[aria-pressed="true"] .sw__knob {
+  background: var(--marigold);
+  transform: translateY(-1.75rem);
+}
+.sw__state { color: #b9c4ee; }
+.sw[aria-pressed="true"] .sw__state { color: var(--marigold); }
+
+.led {
+  display: grid;
+  justify-items: center;
+  gap: 0.15rem;
+  margin-right: 0.4rem;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  line-height: 1.2;
+  text-align: center;
+}
+.led__lamp {
+  position: relative;
+  width: 4.4rem;
+}
+.led__halo {
+  position: absolute;
+  left: 50%;
+  top: 34%;
+  width: 9rem;
+  height: 9rem;
+  margin: -4.5rem 0 0 -4.5rem;
+  border-radius: 50%;
+  background: radial-gradient(closest-side, rgba(255, 205, 80, 0.7), rgba(255, 184, 28, 0.22) 55%, rgba(255, 184, 28, 0));
+  opacity: var(--glow);
+  pointer-events: none;
+}
+.led__lamp svg {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: auto;
+}
+.led .l-off { fill: #5a4712; }
+.led .l-on { fill: #ffe48f; opacity: var(--glow); }
+.led .l-rim { fill: #7c6219; }
+.led .l-leg { fill: none; stroke: #c3cdea; stroke-width: 3; stroke-linecap: round; }
+.led output { font-variant-numeric: tabular-nums; }
+
+/* Chapter 3: the 2018 photos */
+
+.photo {
+  margin: 0;
+  padding: 0.5rem 0.5rem 0;
+  background: var(--white);
+  box-shadow: var(--paper-lift);
+}
+.photo img {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 5 / 8;
+  object-fit: cover;
+  background: #b9c6df;
+}
+.photo figcaption {
+  padding: 0.4rem 0.2rem 0.5rem;
+  font-family: var(--font-hand);
+  font-size: 1.05rem;
+  line-height: 1.2;
+  text-align: center;
+  text-wrap: balance;
+}
+.snaps {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  width: min(100%, 31rem);
+}
+.photo--a {
+  position: relative;
+  z-index: 1;
+  justify-self: start;
+  width: 70%;
+  transform: rotate(-3deg);
+}
+.photo--b {
+  justify-self: end;
+  width: 70%;
+  margin-top: -1.25rem;
+  transform: rotate(2.5deg);
+}
+@media (min-width: 30rem) {
+  .snaps {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    align-items: start;
+  }
+  .photo--a { justify-self: stretch; width: auto; margin-right: -0.6rem; }
+  .photo--b { justify-self: stretch; width: auto; margin: 2.75rem 0 0 -0.6rem; }
+}
+
+/* Chapter 4: the phone */
+
+.rooted {
+  position: relative;
+  display: grid;
+  justify-items: center;
+  width: min(100%, 23rem);
+  padding: 1.75rem 1rem 2.75rem;
+  border: 0.5rem solid var(--white);
+  background: var(--rani);
+  box-shadow: var(--paper-lift);
+  transform: rotate(-1.8deg);
+}
+.phone {
+  width: min(64%, 12rem);
+  padding: 0.45rem;
+  border-radius: 1.7rem;
+  background: #070d24;
+  box-shadow: 0 16px 26px -12px rgba(4, 12, 32, 0.75);
+  transform: rotate(4deg);
+}
+.phone__screen {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  aspect-ratio: 9 / 18;
+  padding: 1.1rem 0.6rem 0.7rem;
+  border-radius: 1.3rem;
+  background: #111c45;
+  color: var(--white);
+  line-height: 1.15;
+}
+.phone__dev {
+  font-family: ui-monospace, "SF Mono", SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+  font-size: 0.75rem;
+  color: #b9c4ee;
+}
+.phone__title {
+  font-family: var(--font-display);
+  font-size: 1.3rem;
+  font-weight: 800;
+  font-stretch: 112.5%;
+  color: var(--marigold);
+}
+.phone__menu {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-auto-rows: 1fr;
+  flex: 1;
+  gap: 0.4rem;
+  margin: 0.35rem 0 0.7rem;
+}
+.phone__menu li {
+  display: grid;
+  place-items: center;
+  padding: 0.3rem 0.2rem;
+  border-radius: 0.5rem;
+  background: rgba(255, 255, 255, 0.1);
+  font-size: 0.78rem;
+  font-weight: 600;
+  text-align: center;
+  overflow-wrap: anywhere;
+}
+.phone__menu li:first-child {
+  background: var(--vermilion);
+  color: var(--navy);
+}
+.phone__bar {
+  flex: none;
+  width: 38%;
+  height: 0.25rem;
+  margin: 0 auto;
+  border-radius: 1rem;
+  background: rgba(255, 255, 255, 0.45);
+}
+.tape {
+  position: absolute;
+  left: 50%;
+  bottom: 0.9rem;
+  width: max-content;
+  max-width: 92%;
+  padding: 0.3rem 0.8rem 0.25rem;
+  background: var(--white);
+  box-shadow: 0 6px 12px -6px rgba(4, 12, 32, 0.6);
+  font-family: var(--font-hand);
+  font-size: 1.15rem;
+  font-weight: 700;
+  line-height: 1.2;
+  text-align: center;
+  transform: translateX(-50%) rotate(-4deg);
+}
+
+/* Chapter 5: a small pile that points back at the big one */
+
+.minipile {
+  display: grid;
+  place-items: center;
+  width: min(100%, 29rem);
+}
+.minipile > * { grid-area: 1 / 1; }
+.minipile__sea {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(1.15rem, 1fr));
+  gap: 0.3rem;
+  width: 100%;
+}
+.minipile__sea i {
+  aspect-ratio: 4 / 3;
+  border: 1px solid rgba(12, 33, 82, 0.3);
+  background: var(--white);
+  box-shadow: 0 1px 2px rgba(12, 33, 82, 0.22);
+  transform: rotate(var(--r, 0deg));
+}
+.minipile__sea i.is-mine {
+  border-color: rgba(12, 33, 82, 0.45);
+  background: var(--marigold);
+}
+.minipile__tags {
+  position: relative;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  max-width: 24.5rem;
+  padding: 1.5rem 0.5rem;
+}
+.mini {
+  margin: -0.15rem;
+  padding: 0.6rem 0.9rem;
+  border: 0.28rem solid var(--white);
+  background: var(--c, var(--marigold));
+  box-shadow: 0 1px 2px rgba(12, 33, 82, 0.3), 0 10px 16px -10px rgba(12, 33, 82, 0.6);
+  font-family: var(--font-display);
+  font-size: 1.25rem;
+  font-weight: 800;
+  font-stretch: 87.5%;
+  line-height: 1.1;
+  transform: translateY(var(--y, 0px)) rotate(var(--r, 0deg));
+}
+.mini--plain { box-shadow: inset 0 0 0 1px rgba(12, 33, 82, 0.16), 0 1px 2px rgba(12, 33, 82, 0.3), 0 10px 16px -10px rgba(12, 33, 82, 0.6); }
+.chapter__link { font-weight: 700; }
+
+/* Chapter 6: on paper */
+
+.facts {
+  width: min(100%, 23rem);
+  padding: 1.4rem 1.4rem 1.5rem;
+  border: 0.5rem solid var(--white);
+  background: var(--aqua);
+  box-shadow: var(--paper-lift);
+  transform: rotate(-1.6deg);
+}
+.facts__title {
+  margin-bottom: 1rem;
+  font-family: var(--font-display);
+  font-size: var(--t-h3);
+  font-weight: 800;
+  font-stretch: 112.5%;
+  line-height: 1.1;
+}
+.facts dl {
+  display: grid;
+  gap: 0.8rem;
+}
+.facts dt {
+  font-size: var(--t-small);
+  font-weight: 500;
+  line-height: 1.3;
+}
+.facts dd {
+  font-weight: 700;
+  line-height: 1.25;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .toy .part { transition: transform 0.6s cubic-bezier(0.3, 1.35, 0.5, 1); }
+  .toy .p-screw-a, .toy .p-screw-b, .toy .p-screw-c { transition-delay: 0.04s; }
+  .toy .p-wheel-a, .toy .p-wheel-b { transition-delay: 0.09s; }
+  .toy .p-battery, .toy .p-motor { transition-delay: 0.14s; }
+  .toy .guide { transition: opacity 0.35s ease 0.2s; }
+  .sw__knob { transition: transform 0.14s ease, background-color 0.14s ease; }
+  .led__halo, .led .l-on { transition: opacity 0.12s linear; }
+}
+
+/* ---------- Skills ---------- */
+
+.skillsband {
+  background: var(--white);
+  padding-block: clamp(3.5rem, 8vw, 6rem);
+  border-top: 2px solid var(--navy);
+}
+.skills__intro { margin-top: 0.9rem; }
+.skills__list {
+  margin-top: 1.75rem;
+  border-top: 2px solid var(--navy);
+}
+.skills__row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 0.15rem 1.5rem;
+  padding-block: 0.9rem;
+  border-bottom: 1px solid rgba(12, 33, 82, 0.2);
+}
+.skills__row dt {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-stretch: 112.5%;
+}
+.skills__row dd { text-wrap: pretty; }
+@media (min-width: 44rem) {
+  .skills__row { grid-template-columns: 13rem minmax(0, 1fr); }
+}
+
+/* ---------- Contact ---------- */
+
+.contact {
+  background: var(--rani);
+  color: var(--white);
+  padding-block: clamp(4rem, 9vw, 7rem) 2rem;
+}
+.contact :focus-visible { outline-color: var(--white); }
+.contact__mail {
+  margin-top: 1.5rem;
+  font-family: var(--font-display);
+  font-size: clamp(1.55rem, 7vw, 4.75rem);
+  font-weight: 800;
+  font-stretch: 112.5%;
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+  overflow-wrap: anywhere;
+}
+.contact__copy {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem 1.25rem;
+  margin-top: 1.75rem;
+  min-height: 3.4rem;
+}
+.contact__copy p { font-weight: 600; }
+.contact__links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 2rem;
+  margin-top: 2.5rem;
+  font-size: 1.2rem;
+  font-weight: 600;
+}
+.contact__links a {
+  display: inline-block;
+  padding-block: 0.3rem;
+  overflow-wrap: anywhere;
+}
+.contact__fine {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 0.5rem 2rem;
+  margin-top: clamp(3.5rem, 8vw, 6rem);
+  padding-top: 1.25rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.45);
+  font-size: var(--t-small);
+  font-weight: 500;
+}
+</style>
+</head>
+<body>
+
+<a class="skip" href="#work">Skip to the work</a>
+
+<header class="hero" id="top">
+  <div class="wrap">
+    <nav class="nav" aria-label="Sections">
+      <a class="nav__brand" href="#top">xelxen</a>
+      <ul>
+        <li><a href="#work">The pile</a></li>
+        <li><a href="#about">My story</a></li>
+        <li><a href="#contact">Say hi</a></li>
+      </ul>
+    </nav>
+
+    <div class="hero__grid">
+      <div class="hero__namebox">
+        <h1 class="hero__name"><span>Sainaman</span> <span>Vig</span></h1>
+      </div>
+
+      <figure class="snap">
+        <p class="snap__note" aria-hidden="true">hi, that&rsquo;s me
+          <svg viewBox="0 0 56 28" focusable="false"><path d="M3 4 C 12 22, 34 26, 52 13"/><path d="M52 13 l-10 -1 M52 13 l-5 9"/></svg>
+        </p>
+        <img src="me.jpg" width="840" height="1120" decoding="async" fetchpriority="high"
+             alt="Sainaman smiling in a navy Penn State Schreyer Honors College sweatshirt, high in the stands of a packed football stadium.">
+        <figcaption>game day at Penn State</figcaption>
+      </figure>
+
+      <p class="lede">I study computer science at Penn State and build software from the bottom up: a kernel, a programming language, a harness that makes language models check their own work, and apps for the people around me.</p>
+
+      <div class="hero__story">
+        <p>In 2020 I started writing software for my family&rsquo;s photography studio in India. A single wedding leaves it with a very large batch of photos, so I built a system that groups them by the faces in them.</p>
+        <p>This page works the same way. Everything I&rsquo;ve done is in one pile. Sort it, or dig through.</p>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main>
+  <section class="table" id="work" aria-labelledby="pile-title">
+    <div class="wrap table__grid">
+
+      <div class="bar">
+        <h2 class="h2" id="pile-title">The pile, sorted</h2>
+        <p class="bar__note" id="pile-note">28 things I&rsquo;ve built, taught, or helped run, sorted into five groups.</p>
+        <button type="button" class="btn" id="sort-btn" hidden>Dump it back out</button>
+        <p class="hand" id="pile-hint" hidden>or keep scrolling. it sorts itself.</p>
+
+        <div class="picker" id="picker" hidden>
+          <p class="picker__label" id="picker-label">Circle anything involving</p>
+          <div class="chips" role="group" aria-labelledby="picker-label">
+            <button type="button" class="chip" data-tag="rust" aria-pressed="false">Rust</button>
+            <button type="button" class="chip" data-tag="go" aria-pressed="false">Go</button>
+            <button type="button" class="chip" data-tag="python" aria-pressed="false">Python</button>
+            <button type="button" class="chip" data-tag="typescript" aria-pressed="false">TypeScript</button>
+            <button type="button" class="chip" data-tag="ai" aria-pressed="false">AI</button>
+            <button type="button" class="chip" data-tag="hardware" aria-pressed="false">hardware</button>
+            <button type="button" class="chip" data-tag="android" aria-pressed="false">Android</button>
+            <button type="button" class="chip" data-tag="design" aria-pressed="false">design</button>
+            <button type="button" class="chip" data-tag="teaching" aria-pressed="false">teaching</button>
+          </div>
+          <div class="picker__status">
+            <p id="pick-status" role="status" aria-live="polite"></p>
+            <button type="button" class="linkbtn" id="pick-clear" hidden>Clear the circles</button>
+          </div>
+        </div>
+
+        <p class="sr" id="mode-status" role="status" aria-live="polite"></p>
+      </div>
+
+      <div class="surface" id="surface">
+
+        <section class="group" data-kind="research">
+          <h3 class="group__title"><span class="group__swatch" aria-hidden="true"></span>Research <span class="group__count">2</span></h3>
+          <ul class="prints">
+            <li class="print print--wide" data-tags="ai teaching">
+              <h4 class="print__title">LLM bias study</h4>
+              <p class="print__text">Does an AI model explain things differently once it knows where you go to school? With one other student, I&rsquo;m running a matched treatment and control study on Gemini, ChatGPT, and Claude. Every answer is scored blind against a rubric for technical depth, complexity, and teaching style, then checked with readability metrics.</p>
+              <div class="print__foot">
+                <p>Human Language Technologies Lab, Penn State. Advised by Dr. Shomir Wilson. May 2026 to now.</p>
+              </div>
+            </li>
+            <li class="print" data-tags="ai">
+              <h4 class="print__title">COLDs</h4>
+              <p class="print__text">I curated the training database for the lab&rsquo;s COLDs project.</p>
+              <div class="print__foot">
+                <p>HLT Lab, Penn State. May to July 2026.</p>
+              </div>
+            </li>
+          </ul>
+        </section>
+
+        <section class="group" data-kind="work">
+          <h3 class="group__title"><span class="group__swatch" aria-hidden="true"></span>Work <span class="group__count">4</span></h3>
+          <ul class="prints">
+            <li class="print" data-tags="ai">
+              <h4 class="print__title">Face grouping</h4>
+              <p class="print__text">One wedding gives my family&rsquo;s studio a very large batch of photos. This AI system groups them by the faces in them, which makes an event&rsquo;s photos and video far easier to manage.</p>
+              <div class="print__foot">
+                <p>Vig Studio &amp; Color Lab, India. 2020 to 2025.</p>
+              </div>
+            </li>
+            <li class="print" data-tags="">
+              <h4 class="print__title">Attendance and wages</h4>
+              <p class="print__text">A biometric attendance system that does the wage calculation itself. It saves the studio two working days of manual work every month.</p>
+              <div class="print__foot">
+                <p>Vig Studio &amp; Color Lab.</p>
+              </div>
+            </li>
+            <li class="print print--wide" data-tags="ai">
+              <h4 class="print__title">Photo pipeline</h4>
+              <p class="print__text">The one I&rsquo;m still building. Two stages that can stop and pick up where they left off: fast WebP compression, then automatic culling with perceptual hashing, blur scoring, GPU face and eye detection, and exposure analysis. A shared SQLite job store lets the stages run on separate machines or together on one.</p>
+              <div class="print__foot">
+                <p>Vig Studio &amp; Color Lab. In progress.</p>
+              </div>
+            </li>
+            <li class="print" data-tags="ai">
+              <h4 class="print__title">Machine learning intern</h4>
+              <p class="print__text">I managed training datasets and helped with preprocessing, labeling, and quality checks for large computer-vision workflows.</p>
+              <div class="print__foot">
+                <p>Videolytical Systems, based in Noida. Remote. January to September 2024.</p>
+              </div>
+            </li>
+          </ul>
+        </section>
+
+        <section class="group" data-kind="teaching">
+          <h3 class="group__title"><span class="group__swatch" aria-hidden="true"></span>Teaching and clubs <span class="group__count">5</span></h3>
+          <ul class="prints">
+            <li class="print print--wide" data-tags="teaching design ai">
+              <h4 class="print__title">GDG@PSU</h4>
+              <p class="print__text">Penn State&rsquo;s Google Developer Group. I started as freshman representative, became marketing lead, and now lead the technical side. So far: one hackathon, five lectures on cryptography and AI/ML, and a beginner neural-network series I&rsquo;m animating in Manim, covering loss landscapes, gradient descent, the chain rule, and backpropagation.</p>
+              <div class="print__foot">
+                <p>Technical lead. August 2025 to now.</p>
+              </div>
+            </li>
+            <li class="print" data-tags="teaching">
+              <h4 class="print__title">Calculus II</h4>
+              <p class="print__text">I was a learning assistant for MATH 141. I ran sessions where students worked through problems and the ideas behind them, and helped Dr. Dylan Attwell-Duval during class.</p>
+              <div class="print__foot">
+                <p>Penn State. January to May 2026.</p>
+              </div>
+            </li>
+            <li class="print" data-tags="hardware">
+              <h4 class="print__title">RoboX</h4>
+              <p class="print__text">Combat robotics. I worked on designing and building robots for North American competitions.</p>
+              <div class="print__foot">
+                <p>Core technical member. Fall 2025.</p>
+              </div>
+            </li>
+            <li class="print" data-tags="ai">
+              <h4 class="print__title">Aviation AI Club</h4>
+              <p class="print__text">I led the technical work on applying AI to operations and logistics problems in aviation.</p>
+              <div class="print__foot">
+                <p>Technical lead. Spring 2026.</p>
+              </div>
+            </li>
+            <li class="print" data-tags="">
+              <h4 class="print__title">DevsPSU</h4>
+              <p class="print__text">Semester-long group software projects and technical events.</p>
+              <div class="print__foot">
+                <p>Core member. Fall 2025.</p>
+              </div>
+            </li>
+          </ul>
+        </section>
+
+        <section class="group" data-kind="projects">
+          <h3 class="group__title"><span class="group__swatch" aria-hidden="true"></span>Projects <span class="group__count">13</span></h3>
+          <ul class="prints">
+            <li class="print print--wide" data-tags="typescript python ai teaching">
+              <h4 class="print__title">Adle</h4>
+              <p class="print__text">A desktop app that teaches you a subject. Give it a topic or your own PDFs, Word files, and notes, and it works out which concepts depend on which, then teaches them with interactive lessons and spaced reviews. It describes what you understand as evidence in words, never as a score. Local-first, with no telemetry. Using an LLM is optional, and it tells you each time it does.</p>
+              <div class="print__foot">
+                <p>TypeScript, Electron, Python. In alpha on Windows, macOS, and Linux.</p>
+              </div>
+            </li>
+            <li class="print print--wide" data-tags="rust ai">
+              <h4 class="print__title">BlipCode</h4>
+              <p class="print__text">A harness that gets better answers out of a language model without changing its weights. It can sample several answers and take a majority vote, or have the model critique and revise its own work, then check the result with verifiers you plug in. It comes as a library and a CLI, with streaming, telemetry, and benchmarks.</p>
+              <div class="print__foot">
+                <p>Rust, async on tokio.</p>
+                <a href="https://github.com/XelXen/BlipCode" target="_blank" rel="noopener">github.com/XelXen/BlipCode</a>
+              </div>
+            </li>
+            <li class="print" data-tags="typescript hardware">
+              <h4 class="print__title">MemberPass</h4>
+              <p class="print__text">The member platform for GDG@PSU. Profiles with per-field privacy, NFC cards and QR IDs, event points, rewards, and a leaderboard. Check-in runs on a tap-in, tap-out kiosk: an ESP32 and an NFC reader talking to the browser over Web Serial.</p>
+              <div class="print__foot">
+                <p>TypeScript, Next.js, Supabase.</p>
+                <a href="https://mempass.vercel.app" target="_blank" rel="noopener">mempass.vercel.app</a>
+                <a href="https://github.com/GDG-PSU/members" target="_blank" rel="noopener">github.com/GDG-PSU/members</a>
+              </div>
+            </li>
+            <li class="print" data-tags="python">
+              <h4 class="print__title">GiveawayBot</h4>
+              <p class="print__text">A Telegram bot that runs giveaways. More than ten communities use it, with over 100,000 members between them. I&rsquo;ve maintained it through v3.1.5.</p>
+              <div class="print__foot">
+                <p>Python.</p>
+                <a href="https://github.com/XelXen/GiveawayBot" target="_blank" rel="noopener">github.com/XelXen/GiveawayBot</a>
+              </div>
+            </li>
+            <li class="print" data-tags="typescript ai">
+              <h4 class="print__title">Doro</h4>
+              <p class="print__text">A favor marketplace for University Park. Describe a task in one sentence; an LLM suggests the details and a rule parser checks them. It estimates a reward, explains why it matched you with a helper, and works offline as an installable app.</p>
+              <div class="print__foot">
+                <p>TypeScript, Next.js. 89 tests.</p>
+                <a href="https://doro-lime.vercel.app" target="_blank" rel="noopener">doro-lime.vercel.app</a>
+                <a href="https://github.com/WOMM-PSU/doro" target="_blank" rel="noopener">github.com/WOMM-PSU/doro</a>
+              </div>
+            </li>
+            <li class="print" data-tags="go">
+              <h4 class="print__title">Crisp</h4>
+              <p class="print__text">A tiny programming language with curly braces, first-class functions, and closures. I wrote the lexer, parser, and evaluator from scratch, using only the standard library. It has a REPL too.</p>
+              <div class="print__foot">
+                <p>Go.</p>
+                <a href="https://github.com/XelXen/crisp" target="_blank" rel="noopener">github.com/XelXen/crisp</a>
+              </div>
+            </li>
+            <li class="print" data-tags="rust">
+              <h4 class="print__title">BlackBoldOS</h4>
+              <p class="print__text">A minimal x86-64 kernel. It boots through UEFI, sets up its own descriptor and interrupt tables, prints over serial, reads the memory map, and gives you a small shell to type into.</p>
+              <div class="print__foot">
+                <p>Rust.</p>
+                <a href="https://github.com/XelXen/BlackBoldOS" target="_blank" rel="noopener">github.com/XelXen/BlackBoldOS</a>
+              </div>
+            </li>
+            <li class="print" data-tags="hardware">
+              <h4 class="print__title">GyroHand</h4>
+              <p class="print__text">A glove that works as a motion controller. It won second prize at the state-level I.B. Science Conclave.</p>
+              <div class="print__foot">
+                <p>Arduino Nano.</p>
+              </div>
+            </li>
+            <li class="print" data-tags="python android">
+              <h4 class="print__title">BootAnimix</h4>
+              <p class="print__text">A toolkit for building and customizing Android boot animations. 25 stars on GitHub.</p>
+              <div class="print__foot">
+                <p>Python, Shell.</p>
+                <a href="https://github.com/BootAnimix" target="_blank" rel="noopener">github.com/BootAnimix</a>
+              </div>
+            </li>
+            <li class="print" data-tags="">
+              <h4 class="print__title">PSCIndex</h4>
+              <p class="print__text">A small web app that indexes Penn State&rsquo;s student communities, with search, filters, tags, and sharing.</p>
+              <div class="print__foot">
+                <a href="https://github.com/PSCIndex" target="_blank" rel="noopener">github.com/PSCIndex</a>
+              </div>
+            </li>
+            <li class="print" data-tags="python">
+              <h4 class="print__title">TG-Chan</h4>
+              <p class="print__text">An anonymous board, 4chan-style, that lives in Telegram. Posts are anonymized with cryptographic hashing.</p>
+              <div class="print__foot">
+                <p>Python.</p>
+                <a href="https://github.com/XelXen/TG-Chan" target="_blank" rel="noopener">github.com/XelXen/TG-Chan</a>
+              </div>
+            </li>
+            <li class="print" data-tags="python">
+              <h4 class="print__title">CommonUsers</h4>
+              <p class="print__text">Finds the users that Telegram groups, channels, and supergroups have in common.</p>
+              <div class="print__foot">
+                <p>Python.</p>
+                <a href="https://github.com/XelXen/CommonUsers" target="_blank" rel="noopener">github.com/XelXen/CommonUsers</a>
+              </div>
+            </li>
+            <li class="print" data-tags="design">
+              <h4 class="print__title">Recignize</h4>
+              <p class="print__text">An app project where I was the UI/UX designer.</p>
+              <div class="print__foot">
+                <a href="https://github.com/Recignize/app" target="_blank" rel="noopener">github.com/Recignize/app</a>
+              </div>
+            </li>
+          </ul>
+        </section>
+
+        <section class="group" data-kind="open">
+          <h3 class="group__title"><span class="group__swatch" aria-hidden="true"></span>Open source <span class="group__count">4</span></h3>
+          <ul class="prints">
+            <li class="print" data-tags="design android">
+              <h4 class="print__title">LibreTube</h4>
+              <p class="print__text">I designed assets for this open-source Android frontend for YouTube. It has more than 12,800 stars on GitHub.</p>
+              <div class="print__foot">
+                <a href="https://github.com/libre-tube" target="_blank" rel="noopener">github.com/libre-tube</a>
+              </div>
+            </li>
+            <li class="print" data-tags="android">
+              <h4 class="print__title">OrangeFox Recovery</h4>
+              <p class="print__text">I was a maintainer of this custom Android recovery, and of several custom ROMs. They&rsquo;re on XDA under my handle, XelXen.</p>
+              <div class="print__foot">
+                <a href="https://github.com/OrangeFoxRecovery" target="_blank" rel="noopener">github.com/OrangeFoxRecovery</a>
+              </div>
+            </li>
+            <li class="print" data-tags="android">
+              <h4 class="print__title">BlissOS</h4>
+              <p class="print__text">Code contributions to the open-source Android-x86 project.</p>
+            </li>
+            <li class="print" data-tags="">
+              <h4 class="print__title">SuperImage</h4>
+              <p class="print__text">I worked on the app&rsquo;s CI/CD.</p>
+            </li>
+          </ul>
+        </section>
+
+      </div>
+    </div>
+  </section>
+
+  <section class="story" id="about" aria-labelledby="about-title">
+    <div class="wrap">
+      <h2 class="h2" id="about-title">How I got here</h2>
+
+      <ol class="chapters">
+
+        <li class="chapter">
+          <div class="chapter__text">
+            <p class="chapter__when">before I was 8</p>
+            <h3 class="chapter__title">I took things apart to see how they worked</h3>
+            <p>Toys never survived me. I blew the fuse for the whole house. I mixed chemicals I&rsquo;d ordered off Amazon. I lay down on the platform beside the tracks as a train pulled in. I filled pages with circuit drawings.</p>
+            <p>All of it for one reason: I had to understand what was going on inside. Curious, and destructive with it.</p>
+            <ul class="exhibits" aria-hidden="true">
+              <li class="exhibit">
+                <svg viewBox="0 0 64 48" focusable="false">
+                  <rect class="f-white" x="14" y="17" width="36" height="14" rx="3"/>
+                  <rect class="f-navy" x="5" y="15" width="10" height="18" rx="2"/>
+                  <rect class="f-navy" x="49" y="15" width="10" height="18" rx="2"/>
+                  <path d="M15 24 H26 M38 24 H49"/>
+                  <path class="s-hot" d="M32 13 V5 M26 15 L21 8 M38 15 L43 8"/>
+                </svg>
+                the house fuse
+              </li>
+              <li class="exhibit">
+                <svg viewBox="0 0 64 48" focusable="false">
+                  <path class="f-rani" d="M21.1 31 H42.9 L47 40 Q49 44 44 44 H20 Q15 44 17 40 Z"/>
+                  <path d="M25 5 H39 M27.5 5 V17 L17 40 Q15 44 20 44 H44 Q49 44 47 40 L36.5 17 V5"/>
+                  <circle cx="30" cy="24" r="2"/>
+                  <circle cx="35" cy="19" r="1.4"/>
+                </svg>
+                the chemicals
+              </li>
+              <li class="exhibit">
+                <svg viewBox="0 0 64 48" focusable="false">
+                  <path d="M8 44 L26 5 M56 44 L38 5"/>
+                  <path d="M7 40 H57 M12 31 H52 M16 22 H48 M20.5 13 H43.5"/>
+                </svg>
+                the train tracks
+              </li>
+              <li class="exhibit">
+                <svg viewBox="0 0 64 48" focusable="false">
+                  <path d="M10 21 V10 H22 l2 -4 l4 8 l4 -8 l4 8 l2 -4 H54 V19 M54 29 V40 H10 V28"/>
+                  <path d="M4 21 H16 M7 28 H13"/>
+                  <path class="f-gold" d="M47 19 H61 L54 29 Z"/>
+                  <path d="M47 29 H61"/>
+                </svg>
+                circuit drawings
+              </li>
+            </ul>
+          </div>
+          <div class="chapter__show">
+            <figure class="toy is-apart" id="toy">
+              <svg viewBox="0 0 320 260" role="img" aria-label="A toy car taken apart: the shell lifted off, with the wheels, motor, battery and screws spread around it." focusable="false">
+                <path class="guide" d="M66 114 V176 M254 114 V176"/>
+                <rect class="part p-chassis" x="60" y="178" width="200" height="12" rx="4"/>
+                <g class="part p-battery">
+                  <rect x="86" y="150" width="62" height="26" rx="4"/>
+                  <rect x="148" y="158" width="6" height="10" rx="1"/>
+                  <path class="mark" d="M97 163 h10 M102 158 v10 M127 163 h10"/>
+                </g>
+                <g class="part p-motor">
+                  <rect x="176" y="148" width="46" height="28" rx="6"/>
+                  <path d="M187 152 v20 M199 152 v20 M211 152 v20 M222 162 h13"/>
+                </g>
+                <g class="part p-shell">
+                  <path class="shell" d="M52 186 V154 Q52 140 66 140 H98 L124 110 Q129 104 137 104 H195 Q203 104 208 110 L234 140 H254 Q268 140 268 154 V186 Z"/>
+                  <path class="glass" d="M136 115 H196 L216 138 H116 Z"/>
+                </g>
+                <g class="part p-wheel-a"><circle class="tyre" cx="100" cy="196" r="24"/><circle class="hub" cx="100" cy="196" r="9"/><path class="spoke" d="M100 189 v14"/></g>
+                <g class="part p-wheel-b"><circle class="tyre" cx="220" cy="196" r="24"/><circle class="hub" cx="220" cy="196" r="9"/><path class="spoke" d="M220 189 v14"/></g>
+                <g class="part screw p-screw-a"><circle cx="68" cy="166" r="5.5"/><path d="M64.5 166 h7"/></g>
+                <g class="part screw p-screw-b"><circle cx="252" cy="166" r="5.5"/><path d="M248.5 166 h7"/></g>
+                <g class="part screw p-screw-c"><circle cx="160" cy="168" r="5.5"/><path d="M156.5 168 h7"/></g>
+              </svg>
+              <button type="button" class="btn btn--ink" id="toy-btn" hidden>Put it back together</button>
+            </figure>
+          </div>
+        </li>
+
+        <li class="chapter">
+          <div class="chapter__text">
+            <p class="chapter__when">age 8</p>
+            <h3 class="chapter__title">My dad made me a deal</h3>
+            <p>He got me an Arduino kit, and it came with a challenge: build something creative with it. Until I did, no more toys. No kid likes going without toys, and I hated losing a challenge even more.</p>
+            <p>So I sat down at my grandpa&rsquo;s old Windows XP laptop and copy-pasted Arduino code I didn&rsquo;t understand. Then I noticed something. I didn&rsquo;t need to understand all of it. I could change the numbers I saw, a small edit here and there, and watch what happened.</p>
+            <p>It took me a whole year to build one thing: a small LED whose brightness I controlled with three switches. Ouch.</p>
+          </div>
+          <div class="chapter__show">
+            <div class="bench" id="bench">
+              <div class="bench__bar">
+                <span>three_switches.ino</span>
+                <span class="bench__dots" aria-hidden="true"><i></i><i></i><i></i></span>
+              </div>
+              <div class="bench__code" role="group" aria-label="Arduino sketch. The three highlighted numbers can be changed.">
+                <div class="ln"><span class="tok-c">// inside loop()</span></div>
+                <div class="ln"><span class="tok-k">int</span> b = <span class="tok-n">0</span>;</div>
+                <div class="ln is-on" data-sw="0"><span class="tok-k">if</span> (digitalRead(<span class="tok-n">2</span>)) b += <span class="num" data-pin="2">40</span>;</div>
+                <div class="ln is-on" data-sw="1"><span class="tok-k">if</span> (digitalRead(<span class="tok-n">3</span>)) b += <span class="num" data-pin="3">80</span>;</div>
+                <div class="ln" data-sw="2"><span class="tok-k">if</span> (digitalRead(<span class="tok-n">4</span>)) b += <span class="num" data-pin="4">135</span>;</div>
+                <div class="ln">analogWrite(<span class="tok-n">9</span>, min(b, <span class="tok-n">255</span>));</div>
+                <div class="ln"><span class="tok-c">// b is <span id="bench-live">120</span> right now</span></div>
+              </div>
+              <div class="bench__board">
+                <div class="switches" role="group" aria-label="Three switches">
+                  <button type="button" class="sw" data-sw="0" aria-pressed="true" aria-label="Switch on pin 2" disabled>
+                    <span class="sw__body"><span class="sw__knob"></span></span>
+                    <span>pin 2</span>
+                    <span class="sw__state">on</span>
+                  </button>
+                  <button type="button" class="sw" data-sw="1" aria-pressed="true" aria-label="Switch on pin 3" disabled>
+                    <span class="sw__body"><span class="sw__knob"></span></span>
+                    <span>pin 3</span>
+                    <span class="sw__state">on</span>
+                  </button>
+                  <button type="button" class="sw" data-sw="2" aria-pressed="false" aria-label="Switch on pin 4" disabled>
+                    <span class="sw__body"><span class="sw__knob"></span></span>
+                    <span>pin 4</span>
+                    <span class="sw__state">off</span>
+                  </button>
+                </div>
+                <div class="led">
+                  <div class="led__lamp">
+                    <span class="led__halo"></span>
+                    <svg viewBox="0 0 80 112" aria-hidden="true" focusable="false">
+                      <path class="l-leg" d="M32 70 V106 M48 70 V96"/>
+                      <path class="l-off" d="M22 62 V38 a18 18 0 0 1 36 0 V62 Z"/>
+                      <path class="l-on" d="M22 62 V38 a18 18 0 0 1 36 0 V62 Z"/>
+                      <rect class="l-rim" x="17" y="60" width="46" height="9" rx="2.5"/>
+                    </svg>
+                  </div>
+                  <p>LED on pin 9</p>
+                  <p><output id="bench-level" aria-live="polite">120</output> of 255</p>
+                </div>
+              </div>
+            </div>
+            <p class="hand hand--ink" id="bench-hint" hidden>go on. drag the numbers, flip the switches.</p>
+          </div>
+        </li>
+
+        <li class="chapter">
+          <div class="chapter__text">
+            <p class="chapter__when">2018</p>
+            <h3 class="chapter__title">Now I knew &ldquo;coding&rdquo;</h3>
+            <p>So I built a smart dustbin. I know. Not the example to open with.</p>
+            <p>Then a fingerprint door lock, and a lot more after that.</p>
+          </div>
+          <div class="chapter__show">
+            <div class="snaps">
+              <figure class="photo photo--a">
+                <img src="kid-dustbin.jpg" width="600" height="960" decoding="async"
+                     alt="Sainaman as a kid in 2018, holding his hand over a table of wired-up parts and an Arduino. Next to him is the smart dustbin: a plastic tub with a cardboard lid and a small servo.">
+                <figcaption>the smart dustbin, 2018</figcaption>
+              </figure>
+              <figure class="photo photo--b">
+                <img src="kid-lock.jpg" width="600" height="960" decoding="async"
+                     alt="Sainaman as a kid in 2018, grinning at the camera while holding a fingerprint sensor wired to an Arduino and a relay.">
+                <figcaption>fingerprint door lock, 2018</figcaption>
+              </figure>
+            </div>
+          </div>
+        </li>
+
+        <li class="chapter">
+          <div class="chapter__text">
+            <p class="chapter__when">age 12</p>
+            <h3 class="chapter__title">Then I discovered rooting</h3>
+            <p>Android rooting changed my whole life. It led me to custom ROMs and custom recoveries. My phone, a Redmi Note 6 Pro (codename tulip), didn&rsquo;t have a recovery, so I learned how to build one, and built it.</p>
+            <p>I showed it to the phone&rsquo;s community and it spread through Telegram&rsquo;s Android scene almost instantly. I was &ldquo;the 12-year-old Android developer.&rdquo; Other developers taught me more, and I officially joined the OrangeFox Recovery team. Online I go by XelXen.</p>
+          </div>
+          <div class="chapter__show">
+            <figure class="rooted">
+              <div class="phone" role="img" aria-label="A phone showing a custom recovery menu for the device codenamed tulip: Install, Wipe, Backup, Restore, Mount, Reboot.">
+                <div class="phone__screen" aria-hidden="true">
+                  <p class="phone__dev">tulip</p>
+                  <p class="phone__title">Recovery</p>
+                  <ul class="phone__menu">
+                    <li>Install</li>
+                    <li>Wipe</li>
+                    <li>Backup</li>
+                    <li>Restore</li>
+                    <li>Mount</li>
+                    <li>Reboot</li>
+                  </ul>
+                  <span class="phone__bar"></span>
+                </div>
+              </div>
+              <figcaption class="tape">the 12-year-old Android developer</figcaption>
+            </figure>
+          </div>
+        </li>
+
+        <li class="chapter">
+          <div class="chapter__text">
+            <p class="chapter__when">the years after</p>
+            <h3 class="chapter__title">Hundreds of projects</h3>
+            <p>For years I contributed to hundreds of other projects, LibreTube and BlissOS among them. In between I learned Python, Rust, and Go and built more and more of my own, all while writing software for my dad&rsquo;s studio.</p>
+            <p><a class="chapter__link" href="#work">Most of it is in the pile</a></p>
+          </div>
+          <div class="chapter__show">
+            <div class="minipile" aria-hidden="true">
+              <div class="minipile__sea" id="sea"></div>
+              <div class="minipile__tags">
+                <span class="mini mini--plain" style="--c: var(--white); --r: -7deg; --y: 3px">custom ROMs</span>
+                <span class="mini" style="--c: var(--marigold); --r: 5deg; --y: -4px">Python</span>
+                <span class="mini mini--plain" style="--c: var(--white); --r: 3deg; --y: -5px">recoveries</span>
+                <span class="mini" style="--c: var(--aqua); --r: -4deg; --y: -2px">dad&rsquo;s studio</span>
+                <span class="mini" style="--c: var(--marigold); --r: 8deg; --y: 4px">Rust</span>
+                <span class="mini" style="--c: var(--marigold); --r: -3deg; --y: 4px">Telegram bots</span>
+                <span class="mini mini--plain" style="--c: var(--white); --r: 6deg; --y: 2px">LibreTube</span>
+                <span class="mini" style="--c: var(--marigold); --r: -9deg; --y: -3px">Go</span>
+                <span class="mini mini--plain" style="--c: var(--white); --r: 2deg; --y: 4px">BlissOS</span>
+              </div>
+            </div>
+          </div>
+        </li>
+
+        <li class="chapter">
+          <div class="chapter__text">
+            <p class="chapter__when">2024 to now</p>
+            <h3 class="chapter__title">From Panipat to Penn State</h3>
+            <p>In 2024 I spent nine months as a machine learning intern for Videolytical Systems, a company based in Noida. It was all online. I only went to Noida about once a month.</p>
+            <p>I finished school in Panipat in March 2025 and started at Penn State that fall, in the Schreyer Honors College.</p>
+            <p>Now I do research at the Human Language Technologies Lab, lead the technical side of GDG@PSU, and build Adle. I still have to know what&rsquo;s going on inside things. These days I find out by building them.</p>
+          </div>
+          <div class="chapter__show">
+            <aside class="facts" aria-labelledby="facts-title">
+              <h4 class="facts__title" id="facts-title">On paper</h4>
+              <dl>
+                <div><dt>School</dt><dd>Penn State, Schreyer Honors College</dd></div>
+                <div><dt>Degree</dt><dd>B.Eng. in Computer Science</dd></div>
+                <div><dt>Minors</dt><dd>Computer Engineering and Mathematics</dd></div>
+                <div><dt>GPA</dt><dd>3.87 of 4.00, Dean&rsquo;s List</dd></div>
+                <div><dt>Graduating</dt><dd>May 2028, in three years</dd></div>
+                <div><dt>In class now</dt><dd>Honors probability theory, numerical computations, object-oriented programming, thesis research</dd></div>
+                <div><dt>Awards</dt><dd>AP Scholar. 2nd prize, I.B. Science Conclave (state level)</dd></div>
+              </dl>
+            </aside>
+          </div>
+        </li>
+
+      </ol>
+    </div>
+  </section>
+
+  <section class="skillsband" aria-labelledby="skills-title">
+    <div class="wrap">
+      <h2 class="h2" id="skills-title">What I work with</h2>
+      <p class="skills__intro">No skill bars. The proof is in the pile.</p>
+      <dl class="skills__list">
+        <div class="skills__row"><dt>Languages</dt><dd>Rust, Python, Go, C, C++, TypeScript, JavaScript, SQL (PostgreSQL, SQLite, MySQL), Bash</dd></div>
+        <div class="skills__row"><dt>Systems</dt><dd>Bare-metal x86-64 kernel development (UEFI, GDT/IDT, serial I/O), async Rust with tokio, interpreter design (lexer, parser, evaluator), cross-platform desktop packaging and CI-built installers, Android recovery and custom ROM development</dd></div>
+        <div class="skills__row"><dt>AI and data</dt><dd>LLM inference-time methods (self-consistency, self-refine, verifier pipelines), LLM-backed application design (provider routing and fallback), computer-vision dataset curation and QA, Pandas</dd></div>
+        <div class="skills__row"><dt>Web and platform</dt><dd>Next.js, React, Electron, Tailwind CSS, Supabase, Stripe, PWAs and Web Push, Vitest, Git, CI/CD, pnpm, Turborepo</dd></div>
+        <div class="skills__row"><dt>Hardware</dt><dd>ESP32, Arduino, PN532 NFC readers, Web Serial API, combat-robot design and construction</dd></div>
+        <div class="skills__row"><dt>Math and algorithms</dt><dd>Data structures and algorithms, computational geometry, probability, numerical computation, discrete mathematics, cellular automata</dd></div>
+        <div class="skills__row"><dt>Design and media</dt><dd>UI/UX design, asset and interface design, animated explainers with Manim</dd></div>
+      </dl>
+    </div>
+  </section>
+</main>
+
+<footer class="contact" id="contact">
+  <div class="wrap">
+    <h2 class="h2">Say hi</h2>
+    <p class="contact__mail"><a href="mailto:sainaman@psu.edu" id="mail">sainaman@psu.edu</a></p>
+    <div class="contact__copy">
+      <button type="button" class="btn btn--light" id="copy-btn" hidden>Copy the address</button>
+      <p id="copy-status" role="status" aria-live="polite"></p>
+    </div>
+    <ul class="contact__links">
+      <li><a href="https://github.com/XelXen" target="_blank" rel="noopener">github.com/XelXen</a></li>
+      <li><a href="https://www.linkedin.com/in/sainaman-vig-1b94a0373" target="_blank" rel="noopener">LinkedIn</a></li>
+      <li><a href="mailto:vigsainaman@gmail.com">vigsainaman@gmail.com</a></li>
+    </ul>
+    <div class="contact__fine">
+      <p>&copy; 2026 Sainaman Vig. State College, Pennsylvania.</p>
+      <p><a href="#top">Back to the top</a></p>
+    </div>
+  </div>
+</footer>
+
+<script>
+(() => {
+  'use strict';
+
+  const d = document;
+  const root = d.documentElement;
+  const byId = (id) => d.getElementById(id);
+
+  const surface = byId('surface');
+  const table = byId('work');
+  if (!surface || !table) return;
+
+  const sortBtn = byId('sort-btn');
+  const title = byId('pile-title');
+  const note = byId('pile-note');
+  const hint = byId('pile-hint');
+  const picker = byId('picker');
+  const pickStatus = byId('pick-status');
+  const pickClear = byId('pick-clear');
+  const modeStatus = byId('mode-status');
+  const about = byId('about');
+
+  const prints = Array.from(surface.querySelectorAll('.print'));
+  const groups = Array.from(surface.querySelectorAll('.group'));
+  const titles = Array.from(surface.querySelectorAll('.group__title'));
+  const chips = Array.from(picker.querySelectorAll('.chip'));
+
+  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)');
+  const canAnimate = typeof Element.prototype.animate === 'function';
+  const numberWords = ['zero', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine'];
+  const groupWord = numberWords[groups.length] || String(groups.length);
+
+  let mode = 'sorted';
+  let armed = false;      // sort once, on its own, when the pile first comes fully into view
+  let drag = null;
+  let zTop = prints.length + 1;
+  let seed = 20;
+  let flight = 0;
+  let lastWidth = 0;
+  let picked = null;
+  let autoTimer = 0;
+  const readyAt = performance.now();
+
+  /* ---- helpers ---- */
+
+  const round = (n) => Math.round(n * 100) / 100;
+  const tf = (o) => 'translate(' + round(o.x) + 'px,' + round(o.y) + 'px) rotate(' + round(o.r) + 'deg) scale(' + round(o.s) + ')';
+
+  function mulberry(a) {
+    return () => {
+      a |= 0; a = (a + 0x6D2B79F5) | 0;
+      let t = Math.imul(a ^ (a >>> 15), 1 | a);
+      t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+      return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+    };
+  }
+
+  function scrollNow(top) {
+    const prev = root.style.scrollBehavior;
+    root.style.scrollBehavior = 'auto';
+    window.scrollTo(window.scrollX, Math.max(0, top));
+    root.style.scrollBehavior = prev;
+  }
+
+  function stopAnimations() {
+    prints.concat(titles).forEach((el) => {
+      if (el.getAnimations) el.getAnimations().forEach((a) => a.cancel());
+    });
+    flight++;
+    surface.classList.remove('is-flying');
+  }
+
+  /* Where each print is on screen right now, including mid-flight. */
+  function snapshot() {
+    return prints.map((p) => {
+      const b = p.getBoundingClientRect();
+      let r = 0;
+      let s = 1;
+      const t = getComputedStyle(p).transform;
+      if (t && t !== 'none') {
+        const m = new DOMMatrixReadOnly(t);
+        r = Math.atan2(m.b, m.a) * 180 / Math.PI;
+        s = Math.hypot(m.a, m.b) || 1;
+      }
+      return { cx: b.left + b.width / 2, cy: b.top + b.height / 2, r, s };
+    });
+  }
+
+  /* Only valid while the grid layout is live. */
+  function measure() {
+    prints.forEach((p) => { p._w = p.offsetWidth; p._h = p.offsetHeight; });
+  }
+
+  function halfExtents(p, deg, s) {
+    const a = Math.abs(deg) * Math.PI / 180;
+    const w = p._w * s;
+    const h = p._h * s;
+    return {
+      x: (w * Math.cos(a) + h * Math.sin(a)) / 2,
+      y: (w * Math.sin(a) + h * Math.cos(a)) / 2
+    };
+  }
+
+  function place(p) {
+    p.style.setProperty('--w', p._w + 'px');
+    p.style.setProperty('--h', p._h + 'px');
+    p.style.setProperty('--tx', round(p._tx) + 'px');
+    p.style.setProperty('--ty', round(p._ty) + 'px');
+    p.style.setProperty('--r', round(p._r) + 'deg');
+    p.style.setProperty('--s', String(round(p._s)));
+  }
+
+  /* Scatter every print inside the surface. Nothing may poke outside it. */
+  function layoutPile() {
+    const W = surface.clientWidth;
+    const H = Math.round(Math.min(600, Math.max(440, 360 + W * 0.2)));
+    lastWidth = W;
+    surface.style.setProperty('--pile-h', H + 'px');
+
+    const base = W < 520 ? 0.52 : W < 860 ? 0.6 : 0.68;
+    const rnd = mulberry(seed);
+    const order = prints.map((_, i) => i);
+    for (let i = order.length - 1; i > 0; i--) {
+      const j = Math.floor(rnd() * (i + 1));
+      const tmp = order[i]; order[i] = order[j]; order[j] = tmp;
+    }
+
+    prints.forEach((p, i) => {
+      let s = base * (p.classList.contains('print--wide') ? 0.8 : 1);
+      const maxW = Math.max(120, W - 24);
+      if (p._w * s > maxW) s = maxW / p._w;
+      const r = (rnd() * 2 - 1) * 15;
+      const e = halfExtents(p, r, s);
+      const cx = e.x * 2 >= W ? W / 2 : e.x + rnd() * (W - 2 * e.x);
+      const cy = e.y * 2 >= H ? H / 2 : e.y + rnd() * (H - 2 * e.y);
+      p._tx = cx - p._w / 2;
+      p._ty = cy - p._h / 2;
+      p._r = r;
+      p._s = s;
+      p._z = order[i] + 1;
+      p.style.zIndex = String(p._z);
+      place(p);
+    });
+    zTop = prints.length + 1;
+  }
+
+  /* Re-scatter after the grid's own sizes change (resize, late fonts). */
+  function repile() {
+    stopAnimations();
+    surface.classList.remove('is-pile');
+    measure();
+    surface.classList.add('is-pile');
+    layoutPile();
+  }
+
+  function fly(first) {
+    const last = snapshot();
+    const token = ++flight;
+    surface.classList.add('is-flying');
+
+    const jobs = prints.map((p, i) => {
+      const f = first[i];
+      const l = last[i];
+      const to = mode === 'pile'
+        ? { x: p._tx, y: p._ty, r: p._r, s: p._s }
+        : { x: 0, y: 0, r: 0, s: 1 };
+      const from = { x: to.x + (f.cx - l.cx), y: to.y + (f.cy - l.cy), r: f.r, s: f.s };
+      const anim = p.animate(
+        [{ transform: tf(from) }, { transform: tf(to) }],
+        { duration: 760, delay: i * 16, easing: 'cubic-bezier(0.2, 0.8, 0.2, 1)', fill: 'backwards' }
+      );
+      return anim.finished.catch(() => {});
+    });
+
+    if (mode === 'sorted') {
+      titles.forEach((t, i) => {
+        t.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 420, delay: 240 + i * 60, easing: 'ease-out', fill: 'backwards' });
+      });
+    }
+
+    Promise.all(jobs).then(() => {
+      if (token === flight) surface.classList.remove('is-flying');
+    });
+  }
+
+  function dropIn() {
+    prints.forEach((p) => {
+      const to = { x: p._tx, y: p._ty, r: p._r, s: p._s };
+      const from = { x: to.x, y: to.y - 46, r: to.r + (p._z % 2 ? 9 : -9), s: to.s * 0.94 };
+      p.animate(
+        [{ transform: tf(from), opacity: 0 }, { transform: tf(to), opacity: 1 }],
+        { duration: 460, delay: 80 + p._z * 14, easing: 'cubic-bezier(0.2, 0.8, 0.3, 1)', fill: 'backwards' }
+      );
+    });
+  }
+
+  function updateUi(announce) {
+    const n = prints.length;
+    const pile = mode === 'pile';
+    table.dataset.mode = mode;
+    title.textContent = pile ? 'The pile' : 'The pile, sorted';
+    note.textContent = pile
+      ? n + ' things I’ve built, taught, or helped run, in no order at all. Drag them around.'
+      : n + ' things I’ve built, taught, or helped run, sorted into ' + groupWord + ' groups.';
+    sortBtn.textContent = pile ? 'Sort the pile' : 'Dump it back out';
+    hint.hidden = !(pile && armed);
+    picker.hidden = pile;
+    if (announce) modeStatus.textContent = pile ? 'Back in a pile.' : 'Sorted into ' + groupWord + ' groups.';
+  }
+
+  function setMode(next, opts) {
+    if (next === mode) return;
+    const o = opts || {};
+    const animate = o.animate !== false && canAnimate && !reduce.matches;
+    const first = animate ? snapshot() : null;
+    stopAnimations();
+
+    if (next === 'pile') {
+      setPick(null);
+      measure();
+      surface.classList.add('is-pile');
+      mode = 'pile';
+      layoutPile();
+      /* If the reader is deep in the grid, bring the table's top back into view. */
+      const top = table.getBoundingClientRect().top;
+      if (top < 0) scrollNow(window.scrollY + top);
+    } else {
+      surface.classList.remove('is-pile');
+      mode = 'sorted';
+      prints.forEach((p) => { p.style.zIndex = ''; });
+    }
+
+    updateUi(o.announce !== false);
+    if (animate) fly(first);
+  }
+
+  /* The pile was scrolled past without being sorted: sort it where it is,
+     and keep whatever the reader is looking at exactly where it was. */
+  function sortAbove() {
+    const body = d.body;
+    root.style.overflowAnchor = 'none';
+    body.style.overflowAnchor = 'none';
+    const before = about.getBoundingClientRect().top;
+    setMode('sorted', { animate: false });
+    const delta = about.getBoundingClientRect().top - before;
+    if (Math.abs(delta) > 0.5) scrollNow(window.scrollY + delta);
+    requestAnimationFrame(() => {
+      root.style.overflowAnchor = '';
+      body.style.overflowAnchor = '';
+    });
+  }
+
+  /* The reader took over (dragged, pressed a button, used the nav): stop sorting on our own. */
+  function disarm() {
+    armed = false;
+    clearTimeout(autoTimer);
+    hint.hidden = true;
+  }
+
+  function autoSort() {
+    if (mode !== 'pile' || drag) return;
+    hint.hidden = true;
+    if (surface.getBoundingClientRect().bottom <= 0) sortAbove();
+    else setMode('sorted');
+  }
+
+  function check(ratio) {
+    if (mode !== 'pile' || drag) return;
+    const r = surface.getBoundingClientRect();
+    if (r.bottom <= 0) { armed = false; sortAbove(); return; }
+    if (!armed) return;
+    const vh = window.innerHeight || root.clientHeight;
+    const visible = Math.min(r.bottom, vh) - Math.max(r.top, 0);
+    const seen = (typeof ratio === 'number' && ratio >= 0.8) || visible >= r.height * 0.8 || visible >= vh * 0.8;
+    if (seen) {
+      armed = false;
+      autoTimer = setTimeout(autoSort, Math.max(500, readyAt + 2200 - performance.now()));
+    }
+  }
+
+  /* ---- circling ---- */
+
+  function buildRings() {
+    const ns = 'http://www.w3.org/2000/svg';
+    prints.forEach((p) => {
+      const h = p.querySelector('.print__title');
+      if (!h) return;
+      const svg = d.createElementNS(ns, 'svg');
+      svg.setAttribute('class', 'ring');
+      svg.setAttribute('viewBox', '0 0 100 40');
+      svg.setAttribute('preserveAspectRatio', 'none');
+      svg.setAttribute('aria-hidden', 'true');
+      svg.setAttribute('focusable', 'false');
+      const path = d.createElementNS(ns, 'path');
+      path.setAttribute('d', 'M9 13 C 19 3, 52 1, 76 4 C 93 6, 99 13, 97 22 C 95 33, 70 38, 46 38 C 22 38, 3 33, 3 21 C 3 11, 15 5, 31 3');
+      svg.appendChild(path);
+      h.appendChild(svg);
+    });
+  }
+
+  function setPick(tag) {
+    picked = tag || null;
+    let n = 0;
+    prints.forEach((p) => {
+      const tags = (p.dataset.tags || '').split(' ');
+      const hit = !!picked && tags.indexOf(picked) !== -1;
+      p.classList.toggle('is-picked', hit);
+      p.classList.toggle('is-dim', !!picked && !hit);
+      if (hit) n++;
+    });
+    let label = '';
+    chips.forEach((c) => {
+      const on = c.dataset.tag === picked;
+      c.setAttribute('aria-pressed', on ? 'true' : 'false');
+      if (on) label = c.textContent;
+    });
+    pickStatus.textContent = picked ? n + ' circled for ' + label + '.' : '';
+    pickClear.hidden = !picked;
+  }
+
+  /* ---- wiring ---- */
+
+  sortBtn.addEventListener('click', () => {
+    disarm();
+    if (mode === 'pile') {
+      setMode('sorted');
+    } else {
+      seed += 1;
+      setMode('pile');
+    }
+  });
+
+  picker.addEventListener('click', (e) => {
+    const chip = e.target.closest('.chip');
+    if (!chip) return;
+    setPick(picked === chip.dataset.tag ? null : chip.dataset.tag);
+  });
+  pickClear.addEventListener('click', () => {
+    const active = chips.filter((c) => c.dataset.tag === picked)[0];
+    setPick(null);
+    if (active) active.focus();
+  });
+
+  /* Dragging prints around the pile. Vertical swipes on touch still scroll the page. */
+  surface.addEventListener('pointerdown', (e) => {
+    if (mode !== 'pile' || drag) return;
+    if (e.pointerType === 'mouse' && e.button !== 0) return;
+    const p = e.target.closest('.print');
+    if (!p) return;
+    disarm();
+    p.style.zIndex = String(++zTop);
+    drag = { p, id: e.pointerId, x: e.clientX, y: e.clientY, tx: p._tx, ty: p._ty, moved: false };
+  });
+
+  window.addEventListener('pointermove', (e) => {
+    if (!drag || e.pointerId !== drag.id) return;
+    const dx = e.clientX - drag.x;
+    const dy = e.clientY - drag.y;
+    const p = drag.p;
+    if (!drag.moved) {
+      if (Math.hypot(dx, dy) < 6) return;
+      drag.moved = true;
+      p.classList.add('is-held');
+      try { p.setPointerCapture(drag.id); } catch (err) { /* capture is optional */ }
+    }
+    const W = surface.clientWidth;
+    const H = surface.clientHeight;
+    const ext = halfExtents(p, p._r, p._s);
+    const minX = Math.min(ext.x, W / 2);
+    const minY = Math.min(ext.y, H / 2);
+    const cx = Math.min(W - minX, Math.max(minX, drag.tx + dx + p._w / 2));
+    const cy = Math.min(H - minY, Math.max(minY, drag.ty + dy + p._h / 2));
+    p._tx = cx - p._w / 2;
+    p._ty = cy - p._h / 2;
+    p.style.setProperty('--tx', round(p._tx) + 'px');
+    p.style.setProperty('--ty', round(p._ty) + 'px');
+  });
+
+  function endDrag(e) {
+    if (!drag || e.pointerId !== drag.id) return;
+    const p = drag.p;
+    const moved = drag.moved;
+    drag = null;
+    p.classList.remove('is-held');
+    try { p.releasePointerCapture(e.pointerId); } catch (err) { /* nothing was captured */ }
+    if (moved) {
+      /* A drag that ends on a link must not follow it. */
+      const swallow = (ev) => { ev.preventDefault(); ev.stopPropagation(); };
+      p.addEventListener('click', swallow, { capture: true, once: true });
+      setTimeout(() => p.removeEventListener('click', swallow, { capture: true }), 0);
+    }
+  }
+  window.addEventListener('pointerup', endDrag);
+  window.addEventListener('pointercancel', endDrag);
+
+  surface.addEventListener('dragstart', (e) => { if (mode === 'pile') e.preventDefault(); });
+  surface.addEventListener('focusin', (e) => {
+    if (mode !== 'pile') return;
+    const p = e.target.closest('.print');
+    if (p) p.style.zIndex = String(++zTop);
+  });
+
+  /* Jumping to a later section while the pile is still a pile: sort it first,
+     so the jump lands in the right place. */
+  d.addEventListener('click', (e) => {
+    const a = e.target.closest ? e.target.closest('a[href^="#"]') : null;
+    if (!a || mode !== 'pile') return;
+    const id = a.getAttribute('href').slice(1);
+    if (!id || id === 'top' || id === 'work' || !byId(id)) return;
+    disarm();
+    setMode('sorted', { animate: false });
+  });
+
+  let resizeTimer = 0;
+  window.addEventListener('resize', () => {
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(() => {
+      if (mode === 'pile' && surface.clientWidth !== lastWidth) repile();
+    }, 140);
+  });
+
+  let ticking = false;
+  window.addEventListener('scroll', () => {
+    if (ticking) return;
+    ticking = true;
+    requestAnimationFrame(() => { ticking = false; check(); });
+  }, { passive: true });
+
+  /* Copy button in the contact band. */
+  const copyBtn = byId('copy-btn');
+  const copyStatus = byId('copy-status');
+  const mail = byId('mail');
+  if (copyBtn && mail) {
+    copyBtn.hidden = false;
+    copyBtn.addEventListener('click', async () => {
+      const address = mail.textContent.trim();
+      try {
+        await navigator.clipboard.writeText(address);
+        copyStatus.textContent = 'Copied ' + address + '.';
+      } catch (err) {
+        try {
+          const range = d.createRange();
+          range.selectNodeContents(mail);
+          const sel = window.getSelection();
+          sel.removeAllRanges();
+          sel.addRange(range);
+        } catch (err2) { /* selection is a convenience only */ }
+        copyStatus.textContent = 'Copying is blocked here. The address is selected, so you can copy it yourself.';
+      }
+    });
+  }
+
+  /* ---- story: the toy that comes apart ---- */
+
+  const toy = byId('toy');
+  const toyBtn = byId('toy-btn');
+  if (toy && toyBtn) {
+    let toyTouched = false;
+    const setToy = (apart) => {
+      toy.classList.toggle('is-apart', apart);
+      toyBtn.textContent = apart ? 'Put it back together' : 'Take it apart';
+    };
+    toyBtn.hidden = false;
+    toyBtn.addEventListener('click', () => {
+      toyTouched = true;
+      setToy(!toy.classList.contains('is-apart'));
+    });
+    if (!reduce.matches && 'IntersectionObserver' in window) {
+      /* It starts in one piece and falls apart once you are looking at it. */
+      setToy(false);
+      const toyWatch = new IntersectionObserver((entries) => {
+        if (!entries.some((en) => en.isIntersecting)) return;
+        toyWatch.disconnect();
+        setTimeout(() => { if (!toyTouched) setToy(true); }, 650);
+      }, { threshold: 0.6 });
+      toyWatch.observe(toy);
+    } else {
+      setToy(true);
+    }
+  }
+
+  /* ---- story: the sketch you can tinker with ---- */
+
+  const bench = byId('bench');
+  if (bench) {
+    const nums = Array.from(bench.querySelectorAll('.num'));
+    const switches = Array.from(bench.querySelectorAll('.sw'));
+    const lines = Array.from(bench.querySelectorAll('.ln[data-sw]'));
+    const levelOut = byId('bench-level');
+    const levelLive = byId('bench-live');
+    const benchHint = byId('bench-hint');
+    const valueOf = (el) => Number(el.textContent) || 0;
+    const isOn = (sw) => sw.getAttribute('aria-pressed') === 'true';
+
+    const renderBench = () => {
+      let level = 0;
+      switches.forEach((sw, i) => {
+        const on = isOn(sw);
+        if (lines[i]) lines[i].classList.toggle('is-on', on);
+        const state = sw.querySelector('.sw__state');
+        if (state) state.textContent = on ? 'on' : 'off';
+        if (on && nums[i]) level += valueOf(nums[i]);
+      });
+      level = Math.min(255, level);
+      bench.style.setProperty('--glow', level ? Math.pow(level / 255, 0.6).toFixed(3) : '0');
+      if (levelOut) levelOut.textContent = String(level);
+      if (levelLive) levelLive.textContent = String(level);
+    };
+
+    const setNum = (el, v) => {
+      const n = Math.max(0, Math.min(255, Math.round(v)));
+      el.textContent = String(n);
+      el.setAttribute('aria-valuenow', String(n));
+      renderBench();
+    };
+
+    switches.forEach((sw) => {
+      sw.disabled = false;
+      sw.addEventListener('click', () => {
+        sw.setAttribute('aria-pressed', isOn(sw) ? 'false' : 'true');
+        renderBench();
+      });
+    });
+
+    nums.forEach((el) => {
+      el.setAttribute('role', 'spinbutton');
+      el.setAttribute('tabindex', '0');
+      el.setAttribute('aria-valuemin', '0');
+      el.setAttribute('aria-valuemax', '255');
+      el.setAttribute('aria-valuenow', String(valueOf(el)));
+      el.setAttribute('aria-label', 'Brightness added by the switch on pin ' + el.dataset.pin);
+
+      /* Drag sideways to change the number. Vertical swipes still scroll the page. */
+      let scrub = null;
+      el.addEventListener('pointerdown', (e) => {
+        if (e.pointerType === 'mouse' && e.button !== 0) return;
+        scrub = { id: e.pointerId, x: e.clientX, v: valueOf(el), moved: false };
+        el.classList.add('is-scrub');
+        try { el.setPointerCapture(e.pointerId); } catch (err) { /* capture is optional */ }
+      });
+      el.addEventListener('pointermove', (e) => {
+        if (!scrub || e.pointerId !== scrub.id) return;
+        const dx = e.clientX - scrub.x;
+        if (!scrub.moved && Math.abs(dx) < 4) return;
+        scrub.moved = true;
+        setNum(el, scrub.v + dx / 1.5);
+      });
+      const endScrub = (e) => {
+        if (!scrub || e.pointerId !== scrub.id) return;
+        const tapped = !scrub.moved && e.type === 'pointerup';
+        scrub = null;
+        el.classList.remove('is-scrub');
+        /* A plain tap still does something: step up, and wrap round at the top. */
+        if (tapped) setNum(el, valueOf(el) >= 255 ? 0 : valueOf(el) + 15);
+      };
+      el.addEventListener('pointerup', endScrub);
+      el.addEventListener('pointercancel', endScrub);
+
+      el.addEventListener('keydown', (e) => {
+        const step = e.shiftKey ? 10 : 1;
+        let v = valueOf(el);
+        if (e.key === 'ArrowUp' || e.key === 'ArrowRight') v += step;
+        else if (e.key === 'ArrowDown' || e.key === 'ArrowLeft') v -= step;
+        else if (e.key === 'PageUp') v += 25;
+        else if (e.key === 'PageDown') v -= 25;
+        else if (e.key === 'Home') v = 0;
+        else if (e.key === 'End') v = 255;
+        else return;
+        e.preventDefault();
+        setNum(el, v);
+      });
+    });
+
+    bench.classList.add('is-live');
+    if (benchHint) benchHint.hidden = false;
+    renderBench();
+  }
+
+  /* ---- story: hundreds of small prints behind the labelled ones ---- */
+
+  const sea = byId('sea');
+  if (sea) {
+    const pick = mulberry(11);
+    const bits = [];
+    for (let i = 0; i < 252; i++) {
+      bits.push('<i' + (pick() < 0.16 ? ' class="is-mine"' : '') + ' style="--r:' + Math.round((pick() * 2 - 1) * 14) + 'deg"></i>');
+    }
+    sea.innerHTML = bits.join('');
+  }
+
+  /* ---- start ---- */
+
+  buildRings();
+  sortBtn.hidden = false;
+
+  const hash = (location.hash || '').slice(1);
+  const landedDeep = hash && hash !== 'top' && hash !== 'work';
+  const startPiled = canAnimate && !reduce.matches && !landedDeep;
+
+  if (startPiled) {
+    armed = true;
+    setMode('pile', { animate: false, announce: false });
+    dropIn();
+    if ('IntersectionObserver' in window) {
+      const io = new IntersectionObserver((entries) => {
+        if (!armed) { io.disconnect(); return; }
+        const entry = entries[entries.length - 1];
+        if (entry.isIntersecting) check(entry.intersectionRatio);
+      }, { threshold: [0.5, 0.8, 1] });
+      io.observe(surface);
+    }
+    requestAnimationFrame(() => check());
+    if (d.fonts && d.fonts.ready) {
+      d.fonts.ready.then(() => { if (mode === 'pile' && !drag) repile(); });
+    }
+  } else {
+    updateUi(false);
+  }
+
+  /* Arriving on a link to a section: late-loading fonts can nudge the layout,
+     so line the section up again unless the reader has already moved. */
+  const target = hash && hash !== 'top' ? byId(hash) : null;
+  if (target) {
+    let touched = false;
+    ['wheel', 'touchstart', 'keydown', 'pointerdown'].forEach((type) => {
+      window.addEventListener(type, () => { touched = true; }, { passive: true, once: true });
+    });
+    const realign = () => {
+      if (!touched) scrollNow(window.scrollY + target.getBoundingClientRect().top);
+    };
+    window.addEventListener('load', realign, { once: true });
+    if (d.fonts && d.fonts.ready) d.fonts.ready.then(realign);
+  }
+})();
+</script>
+</body>
+</html>
